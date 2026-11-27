@@ -1,0 +1,1193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f3">
+  <title>RozgarReceipt — Every shift, clearly agreed</title>
+  <style>
+    :root {
+  --ink:#17251f;
+    --muted:#718079;
+    --line:#e5e9e5;
+    --paper:#fff;
+    --canvas:#f5f6f3;
+    --green:#157957;
+    --green-dark:#105a42;
+    --mint:#e7f5ed;
+    --orange:#efaa4c;
+    --orange-soft:#fff3df;
+    --red:#a94337;
+    --blue:#eaf2fb;
+    --shadow:0 14px 36px #183e2b0d
+  }
+  
+    * {
+  box-sizing:border-box
+  }
+  body {
+  margin:0;
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:Inter,"Segoe UI",Arial,sans-serif;
+    font-size:14px
+  }
+  button,input,select,textarea {
+  font:inherit
+  }
+  button {
+  cursor:pointer
+  }
+  button:focus-visible,input:focus-visible,select:focus-visible {
+  outline:3px solid #79bd9d;
+    outline-offset:2px
+  }
+  .app {
+  min-height:100vh
+  }
+  .topbar {
+  height:72px;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 max(24px,calc((100vw - 1260px)/2));
+    position:sticky;
+    top:0;
+    z-index:5
+  }
+  .brand {
+  display:flex;
+    align-items:center;
+    gap:11px;
+    font-weight:760;
+    letter-spacing:-.4px;
+    font-size:18px
+  }
+  .brand-mark {
+  width:33px;
+    height:33px;
+    border-radius:11px;
+    background:var(--green);
+    color:#fff;
+    display:grid;
+    place-items:center;
+    font-size:17px;
+    box-shadow:inset 0 -3px 0 #0b6244
+  }
+  .brand small {
+  display:block;
+    font-size:9px;
+    letter-spacing:1.45px;
+    color:var(--muted);
+    font-weight:700;
+    margin-top:1px
+  }
+  .top-actions {
+  display:flex;
+    align-items:center;
+    gap:11px
+  }
+  .lang-select {
+  padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:9px;
+    color:#526058;
+    background:#fff;
+    font-size:12px
+  }
+  .profile {
+  width:35px;
+    height:35px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:#e8efe8;
+    color:var(--green);
+    font-size:12px;
+    font-weight:700
+  }
+  .page {
+  max-width:1260px;
+    margin:0 auto;
+    padding:31px 24px 54px
+  }
+  .crumb {
+  font-size:11px;
+    color:#859189;
+    margin-bottom:18px
+  }
+  .crumb b {
+  color:#496257;
+    font-weight:600
+  }
+  .hero {
+  display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:20px;
+    margin-bottom:24px
+  }
+  .kicker {
+  color:var(--green);
+    font-size:10px;
+    text-transform:uppercase;
+    font-weight:750;
+    letter-spacing:1.5px;
+    margin-bottom:9px
+  }
+  .hero h1 {
+  font-size:30px;
+    letter-spacing:-1.2px;
+    margin:0;
+    font-weight:720
+  }
+  .hero p {
+  color:var(--muted);
+    margin:8px 0 0;
+    font-size:13px
+  }
+  .today {
+  border:1px solid var(--line);
+    border-radius:11px;
+    padding:11px 14px;
+    color:#58675f;
+    background:#fff;
+    font-size:11px;
+    white-space:nowrap
+  }
+  .today strong {
+  color:var(--ink);
+    font-size:12px
+  }
+  .dashboard {
+  display:grid;
+    grid-template-columns:minmax(0,1.6fr) minmax(300px,.88fr);
+    gap:19px;
+    align-items:start
+  }
+  .main-col,.side-col {
+  display:grid;
+    gap:17px
+  }
+  .card {
+  background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:15px;
+    box-shadow:var(--shadow)
+  }
+  .welcome {
+  padding:21px 23px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    background:linear-gradient(110deg,#f2faf5,#fff 73%);
+    border-color:#dcece0
+  }
+  .welcome-copy {
+  display:flex;
+    align-items:center;
+    gap:14px
+  }
+  .welcome-icon {
+  width:46px;
+    height:46px;
+    border:1px solid #cce5d4;
+    background:#fff;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    color:var(--green);
+    font-size:20px
+  }
+  .welcome h2 {
+  font-size:15px;
+    margin:0 0 5px
+  }
+  .welcome p {
+  font-size:11px;
+    color:var(--muted);
+    margin:0;
+    line-height:1.55
+  }
+  .primary,.secondary,.quiet,.danger {
+  border-radius:9px;
+    padding:10px 13px;
+    font-size:11px;
+    font-weight:700;
+    transition:transform .16s,filter .16s
+  }
+  .primary {
+  border:1px solid var(--green);
+    background:var(--green);
+    color:#fff;
+    box-shadow:0 3px 0 #0c6849
+  }
+  .primary:hover {
+  filter:brightness(1.07);
+    transform:translateY(-1px)
+  }
+  .secondary {
+  background:#fff;
+    border:1px solid var(--line);
+    color:#435149
+  }
+  .quiet {
+  background:transparent;
+    border:1px solid var(--line);
+    color:#66746b
+  }
+  .danger {
+  background:#fff;
+    border:1px solid #f1d4d0;
+    color:var(--red)
+  }
+  .stats {
+  display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px
+  }
+  .stat {
+  padding:16px 17px
+  }
+  .stat-top {
+  display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#758279;
+    font-size:10px
+  }
+  .stat-icon {
+  width:27px;
+    height:27px;
+    background:#f1f5f1;
+    border-radius:8px;
+    display:grid;
+    place-items:center;
+    color:#55836b;
+    font-size:12px
+  }
+  .stat strong {
+  display:block;
+    font-size:22px;
+    letter-spacing:-.7px;
+    margin:11px 0 3px
+  }
+  .stat small {
+  font-size:10px;
+    color:#89948d
+  }
+  .section-head {
+  display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 19px 14px
+  }
+  .section-head h2 {
+  font-size:14px;
+    margin:0
+  }
+  .section-head p {
+  font-size:10px;
+    color:var(--muted);
+    margin:5px 0 0
+  }
+  .text-button {
+  border:0;
+    background:transparent;
+    color:var(--green);
+    font-size:10px;
+    font-weight:700
+  }
+  .receipts {
+  padding:0 14px 14px
+  }
+  .receipt {
+  border:1px solid var(--line);
+    border-radius:11px;
+    margin-top:9px;
+    padding:13px 14px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:12px;
+    align-items:center;
+    transition:border .15s,transform .15s
+  }
+  .receipt:hover {
+  border-color:#9dc8ac;
+    transform:translateY(-1px)
+  }
+  .receipt-title {
+  font-size:12px;
+    font-weight:700;
+    display:flex;
+    gap:7px;
+    align-items:center;
+    flex-wrap:wrap
+  }
+  .receipt-meta {
+  font-size:10px;
+    color:#78847c;
+    margin-top:5px;
+    line-height:1.5
+  }
+  .receipt-pay {
+  text-align:right;
+    font-size:13px;
+    font-weight:700
+  }
+  .receipt-pay small {
+  font-size:9px;
+    display:block;
+    font-weight:500;
+    color:#88938c;
+    margin-top:5px
+  }
+  .status {
+  display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:4px 7px;
+    border-radius:99px;
+    background:var(--orange-soft);
+    color:#946020;
+    font-size:8px;
+    font-weight:750;
+    letter-spacing:.1px
+  }
+  .status:before {
+  content:'';
+    width:5px;
+    height:5px;
+    background:currentColor;
+    border-radius:50%
+  }
+  .status.confirmed {
+  background:var(--mint);
+    color:#28714d
+  }
+  .status.paid {
+  background:#e9f2fc;
+    color:#37618e
+  }
+  .status.review {
+  background:#fff0ed;
+    color:#9c4839
+  }
+  .empty {
+  padding:32px 18px;
+    text-align:center;
+    color:var(--muted);
+    font-size:11px
+  }
+  .empty strong {
+  display:block;
+    color:#33453b;
+    font-size:12px;
+    margin-bottom:5px
+  }
+  .how-card {
+  padding:17px 19px
+  }
+  .how-card h2 {
+  font-size:13px;
+    margin:0
+  }
+  .steps {
+  display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+    margin-top:14px
+  }
+  .step {
+  padding:11px 10px;
+    background:#f8faf8;
+    border-radius:9px
+  }
+  .step b {
+  font-size:10px;
+    display:block;
+    margin-bottom:4px
+  }
+  .step span {
+  font-size:9px;
+    color:#7b8880;
+    line-height:1.5
+  }
+  .voice-card {
+  padding:20px
+  }
+  .voice-card h2 {
+  font-size:14px;
+    margin:0
+  }
+  .voice-card>p {
+  color:var(--muted);
+    font-size:10px;
+    line-height:1.6;
+    margin:6px 0 16px
+  }
+  .role-tabs {
+  display:grid;
+    grid-template-columns:1fr 1fr;
+    background:#f2f4f1;
+    border-radius:9px;
+    padding:3px;
+    gap:3px
+  }
+  .role-tab {
+  border:0;
+    background:transparent;
+    padding:9px;
+    border-radius:7px;
+    color:#758078;
+    font-size:10px;
+    font-weight:700
+  }
+  .role-tab.active {
+  color:#1f6248;
+    background:#fff;
+    box-shadow:0 2px 5px #16271c12
+  }
+  .voice-row {
+  display:flex;
+    align-items:center;
+    gap:10px;
+    margin:16px 0 10px
+  }
+  .mic {
+  width:47px;
+    height:47px;
+    flex:none;
+    border-radius:50%;
+    border:1px solid #b8dcc5;
+    background:var(--mint);
+    color:var(--green);
+    font-size:18px;
+    display:grid;
+    place-items:center;
+    position:relative
+  }
+  .mic.listening {
+  background:#ffefed;
+    color:#a94337;
+    border-color:#efc1bb;
+    animation:pulse 1s infinite
+  }
+  .mic-text strong {
+  font-size:11px;
+    display:block
+  }
+  .mic-text small {
+  font-size:9px;
+    color:#808b83;
+    display:block;
+    margin-top:4px;
+    line-height:1.4
+  }
+  .voice-hint {
+  font-size:9px;
+    color:#828d85;
+    line-height:1.55;
+    padding:10px 11px;
+    background:#f7f9f7;
+    border-radius:8px
+  }
+  .or-line {
+  display:flex;
+    align-items:center;
+    gap:8px;
+    color:#a2aba4;
+    font-size:9px;
+    margin:13px 0
+  }
+  .or-line:before,.or-line:after {
+  content:'';
+    height:1px;
+    background:var(--line);
+    flex:1
+  }
+  .demo-link {
+  width:100%;
+    background:#fff;
+    border:1px dashed #b8c8bc;
+    border-radius:8px;
+    padding:9px 10px;
+    color:#496355;
+    font-size:10px;
+    font-weight:650
+  }
+  .trust {
+  border-top:1px solid var(--line);
+    padding-top:14px;
+    margin-top:17px;
+    color:#7b887f;
+    font-size:9px;
+    line-height:1.6
+  }
+  .trust b {
+  color:#42614d
+  }
+  .tip {
+  border-radius:12px;
+    background:#eef5f0;
+    padding:14px 16px;
+    font-size:10px;
+    color:#61736a;
+    line-height:1.65
+  }
+  .tip strong {
+  color:#31523d
+  }
+  .tip-icon {
+  font-size:15px;
+    margin-right:7px
+  }
+  .footer {
+  display:flex;
+    justify-content:space-between;
+    color:#929d95;
+    font-size:9px;
+    padding:23px 2px 0
+  }
+  
+    .overlay {
+  position:fixed;
+    inset:0;
+    background:#13231bd1;
+    backdrop-filter:blur(4px);
+    display:none;
+    place-items:center;
+    padding:18px;
+    z-index:20
+  }
+  .overlay.open {
+  display:grid
+  }
+  .dialog {
+  width:min(590px,100%);
+    max-height:92vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:17px;
+    box-shadow:0 28px 90px #0b1e1580
+  }
+  .dialog-head {
+  padding:21px 23px 15px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start
+  }
+  .dialog-head h2 {
+  font-size:17px;
+    letter-spacing:-.3px;
+    margin:0
+  }
+  .dialog-head p {
+  font-size:10px;
+    color:var(--muted);
+    margin:5px 0 0
+  }
+  .close {
+  width:30px;
+    height:30px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:#6c7970;
+    font-size:15px
+  }
+  .dialog-body {
+  padding:19px 23px 22px
+  }
+  .form-grid {
+  display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px
+  }
+  .field {
+  display:grid;
+    gap:6px
+  }
+  .field.full {
+  grid-column:1/-1
+  }
+  .field label {
+  font-size:10px;
+    color:#607067;
+    font-weight:700
+  }
+  .field input,.field select {
+  width:100%;
+    height:39px;
+    border:1px solid #dce3dd;
+    background:#fff;
+    border-radius:8px;
+    padding:0 10px;
+    font-size:11px;
+    color:#23362b
+  }
+  .field input::placeholder {
+  color:#a3ada6
+  }
+  .form-note {
+  font-size:9px;
+    color:#79867e;
+    line-height:1.55;
+    margin:13px 0 17px;
+    padding:10px 11px;
+    background:#f5f8f5;
+    border-radius:8px
+  }
+  .dialog-actions {
+  display:flex;
+    justify-content:flex-end;
+    gap:8px
+  }
+  .review-summary {
+  border:1px solid var(--line);
+    background:#f8faf8;
+    border-radius:12px;
+    padding:16px;
+    margin:15px 0
+  }
+  .review-voice {
+  display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px
+  }
+  .review-play {
+  width:43px;
+    height:43px;
+    border-radius:50%;
+    background:var(--green);
+    border:0;
+    color:white;
+    font-size:16px
+  }
+  .review-voice strong {
+  font-size:12px;
+    display:block
+  }
+  .review-voice span {
+  display:block;
+    color:#7f8a82;
+    font-size:9px;
+    margin-top:4px
+  }
+  .summary-grid {
+  display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px
+  }
+  .summary-item {
+  padding:10px;
+    background:#fff;
+    border:1px solid #edf0ed;
+    border-radius:8px
+  }
+  .summary-item small {
+  display:block;
+    color:#89958d;
+    font-size:8px;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    margin-bottom:5px
+  }
+  .summary-item strong {
+  font-size:11px
+  }
+  .summary-pay {
+  display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid #e2e8e3;
+    font-size:10px;
+    color:#68756c
+  }
+  .summary-pay strong {
+  font-size:17px;
+    color:#193c2a
+  }
+  .confirm-row {
+  display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-top:14px
+  }
+  .confirm-row button {
+  padding:12px 8px;
+    font-size:10px
+  }
+  .complete-actions {
+  display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:15px
+  }
+  .toast {
+  position:fixed;
+    bottom:22px;
+    left:50%;
+    transform:translate(-50%,15px);
+    opacity:0;
+    pointer-events:none;
+    background:#193a2a;
+    color:#fff;
+    padding:11px 15px;
+    border-radius:9px;
+    box-shadow:0 9px 28px #0d201852;
+    font-size:11px;
+    z-index:30;
+    transition:.22s
+  }
+  .toast.show {
+  opacity:1;
+    transform:translate(-50%,0)
+  }
+  
+    @keyframes pulse {
+  50% {
+  box-shadow:0 0 0 8px #da777022
+  }
+  
+  }
+  @media(max-width:930px) {
+  .dashboard {
+  grid-template-columns:1fr
+  }
+  .side-col {
+  grid-template-columns:1fr 1fr;
+    align-items:start
+  }
+  .tip {
+  grid-column:1/-1
+  }
+  .page {
+  padding-top:24px
+  }
+  
+  }
+  @media(max-width:620px) {
+  .topbar {
+  height:61px;
+    padding:0 15px
+  }
+  .brand {
+  font-size:16px
+  }
+  .brand-mark {
+  width:30px;
+    height:30px
+  }
+  .page {
+  padding:20px 13px 36px
+  }
+  .hero {
+  align-items:flex-start
+  }
+  .hero h1 {
+  font-size:25px
+  }
+  .hero p {
+  font-size:11px;
+    max-width:290px;
+    line-height:1.5
+  }
+  .today {
+  font-size:9px;
+    padding:9px;
+    white-space:normal;
+    text-align:right;
+    max-width:100px
+  }
+  .today strong {
+  font-size:10px
+  }
+  .dashboard {
+  gap:13px
+  }
+  .welcome {
+  padding:15px;
+    align-items:flex-start
+  }
+  .welcome-copy {
+  gap:10px
+  }
+  .welcome-icon {
+  width:38px;
+    height:38px;
+    flex:none
+  }
+  .welcome h2 {
+  font-size:12px
+  }
+  .welcome p {
+  font-size:9px
+  }
+  .welcome .primary {
+  padding:9px;
+    font-size:9px;
+    white-space:nowrap
+  }
+  .stats {
+  gap:7px
+  }
+  .stat {
+  padding:12px 11px
+  }
+  .stat strong {
+  font-size:19px
+  }
+  .stat-top {
+  font-size:8px;
+    align-items:flex-start;
+    gap:3px
+  }
+  .stat-icon {
+  width:23px;
+    height:23px
+  }
+  .stat small {
+  font-size:8px
+  }
+  .section-head {
+  padding:15px 14px 11px
+  }
+  .receipts {
+  padding:0 10px 10px
+  }
+  .receipt {
+  padding:11px;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:6px
+  }
+  .receipt-title {
+  font-size:10px
+  }
+  .receipt-meta {
+  font-size:9px
+  }
+  .receipt-pay {
+  font-size:11px
+  }
+  .side-col {
+  grid-template-columns:1fr
+  }
+  .tip {
+  grid-column:auto
+  }
+  .steps {
+  gap:6px
+  }
+  .step {
+  padding:9px 8px
+  }
+  .step b {
+  font-size:9px
+  }
+  .step span {
+  font-size:8px
+  }
+  .dialog-head,.dialog-body {
+  padding-left:16px;
+    padding-right:16px
+  }
+  .form-grid {
+  gap:10px
+  }
+  .field input,.field select {
+  font-size:10px
+  }
+  .footer {
+  font-size:8px
+  }
+  .crumb {
+  margin-bottom:14px
+  }
+  
+  }
+  
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">✓</div><div>RozgarReceipt<small>EVERY SHIFT, CLEARLY AGREED</small></div></div>
+      <div class="top-actions"><select id="language" class="lang-select" aria-label="Voice language"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option></select><div class="profile" title="Demo account">RR</div></div>
+    </header>
+    <main class="page">
+      <div class="crumb">Workspace&nbsp; / &nbsp;<b>Shift receipts</b></div>
+      <section class="hero"><div><div class="kicker">A clearer way to agree on work</div><h1>Good morning, Alex</h1><p>Speak the shift details. Both sides hear the same agreement.</p></div><div class="today">TODAY<br><strong id="todayDate"></strong></div></section>
+      <div class="dashboard">
+        <div class="main-col">
+          <section class="card welcome"><div class="welcome-copy"><div class="welcome-icon">◖</div><div><h2>Start with a clear agreement</h2><p>Make a shift receipt in a few simple steps.<br>Speak or type — your choice.</p></div></div><button class="primary" id="newShift">＋ &nbsp;New shift</button></section>
+          <section class="stats" aria-label="Shift summary"><div class="card stat"><div class="stat-top"><span>Shifts today</span><i class="stat-icon">▤</i></div><strong id="statShifts">2</strong><small>Across your team</small></div><div class="card stat"><div class="stat-top"><span>Awaiting confirmation</span><i class="stat-icon">◷</i></div><strong id="statPending">1</strong><small>Worker review needed</small></div><div class="card stat"><div class="stat-top"><span>Paid</span><i class="stat-icon">₹</i></div><strong id="statPaid">₹1,800</strong><small>Recorded today</small></div></section>
+          <section class="card"><div class="section-head"><div><h2>Recent shift receipts</h2><p>Shared records of agreed work and payment</p></div><div><button class="text-button" id="resetDemo">Reset demo</button><button class="text-button" id="showAll">View all</button></div></div><div class="receipts" id="receipts"></div></section>
+          <section class="card how-card"><h2>Three simple steps</h2><div class="steps"><div class="step"><b>01 &nbsp; Say the work</b><span>Tell us the job, time, place, and pay.</span></div><div class="step"><b>02 &nbsp; Hear it back</b><span>Both people review the same terms.</span></div><div class="step"><b>03 &nbsp; Keep the receipt</b><span>Confirm hours and payment after work.</span></div></div></section>
+        </div>
+        <aside class="side-col">
+          <section class="card voice-card"><h2>Quick voice action</h2><p>Start a new shift or review an agreement. Choose the person you're using the app as.</p><div class="role-tabs"><button class="role-tab active" data-role="employer">I'm hiring</button><button class="role-tab" data-role="worker">I'm working</button></div><div class="voice-row"><button class="mic" id="mic" aria-label="Start voice input">●</button><div class="mic-text"><strong id="voiceTitle">Speak a new shift</strong><small id="voiceHelp">Tap to describe the work, hours, place, and pay.</small></div></div><div class="voice-hint" id="voiceHint">Try: “Two painters tomorrow, 9 to 5, at MG Road, ₹900 each.”</div><div class="or-line">OR TRY A DEMO</div><button class="demo-link" id="demoAction">▶ &nbsp; Fill a sample shift</button><div class="trust"><b>Worker choice comes first.</b> The worker hears the terms and confirms them before a receipt is marked agreed.</div></section>
+          <div class="tip"><span class="tip-icon">✳</span><strong>Built for everyday phones.</strong><br>Large buttons, plain language, voice playback, and a typed fallback.</div>
+        </aside>
+      </div>
+      <footer class="footer"><span>ROZGARRECEIPT · PROTOTYPE</span><span>Demo records stay on this device</span></footer>
+    </main>
+  </div>
+  <div class="overlay" id="createDialog" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="createTitle">Create a shift offer</h2><p>Say or type the details. You can edit everything before sharing.</p></div><button class="close" data-close="createDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="form-grid"><div class="field"><label for="work">Type of work</label><input id="work" placeholder="e.g. Painting" value="Painter"></div><div class="field"><label for="workers">Number of workers</label><input id="workers" type="number" min="1" value="2"></div><div class="field"><label for="date">Date</label><input id="date" type="date"></div><div class="field"><label for="location">Work location</label><input id="location" placeholder="e.g. MG Road"></div><div class="field"><label for="start">Start time</label><input id="start" type="time" value="09:00"></div><div class="field"><label for="end">End time</label><input id="end" type="time" value="17:00"></div><div class="field"><label for="wage">Agreed pay (₹ per worker)</label><input id="wage" type="number" min="1" value="900"></div><div class="field"><label for="payment">Payment method</label><select id="payment"><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div></div><div class="form-note">The worker will review these terms before the shift receipt is marked agreed. This prototype does not send messages or make payments.</div><div class="dialog-actions"><button class="secondary" data-close="createDialog">Cancel</button><button class="primary" id="previewOffer">Review the offer&nbsp; →</button></div></div></div></div>
+  <div class="overlay" id="reviewDialog" role="dialog" aria-modal="true" aria-labelledby="reviewTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="reviewTitle">Worker review</h2><p>Listen to the terms. Confirm them or flag a change.</p></div><button class="close" data-close="reviewDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="review-summary" id="reviewSummary"></div><div class="confirm-row"><button class="danger" id="flagChange">Something needs changing</button><button class="primary" id="workerConfirm">I understand &amp; agree</button></div><div class="form-note">This is a demo confirmation on one device. In a real pilot, the worker would review and confirm privately on their own phone or with a trusted facilitator.</div></div></div></div>
+  <div class="overlay" id="detailDialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="detailTitle">Shift receipt</h2><p id="detailSubtitle">Review the agreement and update its status.</p></div><button class="close" data-close="detailDialog" aria-label="Close">×</button></div><div class="dialog-body"><div id="detailSummary"></div><div class="complete-actions" id="detailActions"></div></div></div></div>
+  <div class="toast" id="toast" role="status"></div>
+  <script>
+    const STORAGE_KEY='rozgarreceipt-v1';
+    
+    const initial=[
+      {id:'RR-1042',work:'Painter',workers:2,date:localIso(0),location:'MG Road, Bengaluru',start:'09:00',end:'17:00',wage:900,payment:'UPI',status:'pending',workerStatus:'Awaiting worker review',paid:0},
+      {id:'RR-1041',work:'Tile helper',workers:1,date:localIso(0),location:'Indiranagar, Bengaluru',start:'08:30',end:'16:30',wage:800,payment:'Cash',status:'confirmed',workerStatus:'Agreed by both',paid:0},
+      {id:'RR-1038',work:'Electrician',workers:1,date:localIso(-1),location:'Jayanagar, Bengaluru',start:'10:00',end:'13:00',wage:1100,payment:'UPI',status:'paid',workerStatus:'Work complete · paid',paid:1100}
+    ];
+    
+    let shifts=loadShifts(),role='employer',activeId=null,showAll=false,recognition=null;
+    
+    const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+    
+    function localIso(offset){const d=new Date();
+    d.setDate(d.getDate()+offset);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+    function loadShifts(){try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return Array.isArray(x)?x:initial}catch{return initial}}
+    function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(shifts));
+    render()}
+    function money(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
+    function prettyDate(iso){if(!iso)return 'Date not set';
+    const d=new Date(iso+'T12:00:00');
+    return d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}
+    function clock(t){if(!t)return '—';
+    const [h,m]=t.split(':').map(Number);
+    return `${((h+11)%12)+1}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`}
+    function statusLabel(s){return s==='pending'?'Awaiting review':s==='confirmed'?'Agreed by both':s==='paid'?'Paid':s==='review'?'Needs review':'Work complete'}
+    function render(){
+      const list=showAll?shifts:shifts.slice(0,3);
+    $('#receipts').innerHTML=list.length?list.map(s=>`<article class="receipt" data-id="${s.id}" tabindex="0" role="button" aria-label="Open receipt ${s.id}"><div><div class="receipt-title">${esc(s.work)} <span class="status ${s.status}">${statusLabel(s.status)}</span></div><div class="receipt-meta">${s.id} · ${prettyDate(s.date)} · ${esc(s.location||'Location to confirm')}<br>${s.workers} ${s.workers===1?'worker':'workers'} · ${clock(s.start)}–${clock(s.end)} · ${s.payment}</div></div><div class="receipt-pay">${money(s.wage)}<small>${s.status==='paid'?'Paid':`per worker · ${s.status==='pending'?'review needed':'agreed'}`}</small></div></article>`).join(''):'<div class="empty"><strong>No shifts yet</strong>Create your first shift receipt.</div>';
+    
+      const today=localIso(0),todayShifts=shifts.filter(s=>s.date===today);
+    $('#statShifts').textContent=todayShifts.length;
+    $('#statPending').textContent=todayShifts.filter(s=>s.status==='pending').length;
+    const paid=todayShifts.reduce((sum,s)=>sum+(s.paid||0),0);
+    $('#statPaid').textContent=money(paid);
+    $('#todayDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+    $('#showAll').textContent=showAll?'Show less':'View all';
+    
+    }
+    function esc(x){const suffix=String.fromCharCode(59);
+    return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp'+suffix,'<':'&lt'+suffix,'>':'&gt'+suffix,'"':'&quot'+suffix,"'":'&#39'+suffix}[c]))}
+    function open(id){const e=$('#'+id);
+    e.classList.add('open');
+    document.body.style.overflow='hidden'}function close(id){$('#'+id).classList.remove('open');
+    if(!$('.overlay.open'))document.body.style.overflow=''}
+    function toast(message){const t=$('#toast');
+    t.textContent=message;
+    t.classList.add('show');
+    clearTimeout(window.toastTimer);
+    window.toastTimer=setTimeout(()=>t.classList.remove('show'),2600)}
+    function makeDate(){const f=$('#date');
+    f.value=localIso(1);
+    $('#createTitle').textContent='Create a shift offer';
+    $('#createDialog .dialog-head p').textContent='Say or type the details. You can edit everything before sharing.';
+    $('#work').value='Painter';
+    $('#workers').value='2';
+    $('#location').value='';
+    $('#start').value='09:00';
+    $('#end').value='17:00';
+    $('#wage').value='900';
+    $('#payment').value='Cash'}
+    function formShift(){return {work:$('#work').value.trim(),workers:Math.max(1,Number($('#workers').value)||1),date:$('#date').value,location:$('#location').value.trim(),start:$('#start').value,end:$('#end').value,wage:Math.max(0,Number($('#wage').value)||0),payment:$('#payment').value}}
+    function checkShift(s){if(!s.work||!s.date||!s.start||!s.end||!s.location||!s.wage){toast('Please add the work, date, time, location, and pay.');
+    return false}return true}
+    function summaryMarkup(s){return `<div class="review-voice"><button class="review-play" id="speakTerms" aria-label="Read the shift terms aloud">▶</button><div><strong>Listen to the shift agreement</strong><span>Tap the green button to hear it read aloud</span></div></div><div class="summary-grid"><div class="summary-item"><small>Work</small><strong>${esc(s.work)} · ${s.workers} ${s.workers===1?'worker':'workers'}</strong></div><div class="summary-item"><small>Date</small><strong>${prettyDate(s.date)}</strong></div><div class="summary-item"><small>Hours</small><strong>${clock(s.start)} – ${clock(s.end)}</strong></div><div class="summary-item"><small>Location</small><strong>${esc(s.location)}</strong></div></div><div class="summary-pay"><span>Pay per worker · ${esc(s.payment)}</span><strong>${money(s.wage)}</strong></div>`}
+    function spokenTerms(s){const lang=$('#language').value;
+    if(lang==='hi-IN')return `काम: ${s.work}। कामगार: ${s.workers}। तारीख: ${prettyDate(s.date)}। समय: ${clock(s.start)} से ${clock(s.end)}। जगह: ${s.location}। हर कामगार का भुगतान ${s.wage} रुपये, ${s.payment} से।`;
+    return `Work: ${s.work}. Workers: ${s.workers}. Date: ${prettyDate(s.date)}. Hours: ${clock(s.start)} to ${clock(s.end)}. Location: ${s.location}. Pay per worker: ${s.wage} rupees, by ${s.payment}.`}
+    function speak(text){if(!('speechSynthesis'in window)){toast('Audio playback is not supported in this browser.');
+    return}speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang=$('#language').value;
+    u.rate=.88;
+    speechSynthesis.speak(u)}
+    function bindSpeak(){const b=$('#speakTerms');
+    if(b)b.onclick=()=>{const s=shifts.find(x=>x.id===activeId)||formShift();
+    speak(spokenTerms(s))}}
+    function openReview(s,mode){activeId=s.id;
+    $('#reviewTitle').textContent=mode==='new'?'Worker review':'Review the shift terms';
+    $('#reviewSummary').innerHTML=summaryMarkup(s);
+    bindSpeak();
+    open('reviewDialog')}
+    function openDetails(id){const s=shifts.find(x=>x.id===id);
+    if(!s)return;
+    activeId=id;
+    $('#detailTitle').textContent=`Shift receipt · ${s.id}`;
+    $('#detailSubtitle').textContent=statusLabel(s.status);
+    $('#detailSummary').innerHTML=summaryMarkup(s)+`<div class="form-note" style="margin-bottom:0">Status: <b>${statusLabel(s.status)}</b> · Worker review: ${esc(s.workerStatus)}</div>`;
+    bindSpeak();
+    const a=$('#detailActions');
+    a.innerHTML='';
+    if(s.status==='pending'){a.innerHTML='<button class="danger" id="detailFlag">Flag a change</button><button class="primary" id="detailAgree">Confirm as worker</button>';
+    $('#detailFlag').onclick=()=>flag(s.id);
+    $('#detailAgree').onclick=()=>confirmShift(s.id)}else if(s.status==='confirmed'){a.innerHTML='<button class="secondary" id="completeShift">Mark work complete</button>';
+    $('#completeShift').onclick=()=>complete(s.id)}else if(s.status==='review'){a.innerHTML='<button class="secondary" id="resolveReview">Return to worker review</button>';
+    $('#resolveReview').onclick=()=>{close('detailDialog');
+    openReview(shifts.find(x=>x.id===id),'review')}}else if(s.status==='completed'){a.innerHTML='<button class="primary" id="paidShift">Record payment received</button><button class="danger" id="unpaidShift">Not paid yet</button>';
+    $('#paidShift').onclick=()=>payment(s.id,true);
+    $('#unpaidShift').onclick=()=>payment(s.id,false)}open('detailDialog')}
+    function confirmShift(id){const s=shifts.find(x=>x.id===id);
+    if(!s)return;
+    s.status='confirmed';
+    s.workerStatus='Agreed by both';
+    save();
+    close('reviewDialog');
+    close('detailDialog');
+    toast('Agreement confirmed. A shift receipt is saved.')}
+    function flag(id){const s=shifts.find(x=>x.id===id);
+    if(!s)return;
+    s.status='review';
+    s.workerStatus='Worker requested a change';
+    save();
+    close('reviewDialog');
+    close('detailDialog');
+    toast('Marked for review. The offer needs to be discussed again.')}
+    function complete(id){const s=shifts.find(x=>x.id===id);
+    if(!s)return;
+    s.status='completed';
+    s.workerStatus='Work complete · payment to confirm';
+    save();
+    close('detailDialog');
+    toast('Work marked complete. Record the payment when ready.')}
+    function payment(id,paid){const s=shifts.find(x=>x.id===id);
+    if(!s)return;
+    if(paid){s.status='paid';
+    s.paid=s.wage*s.workers;
+    s.workerStatus='Work complete · payment recorded'}else{s.status='review';
+    s.paid=0;
+    s.workerStatus='Payment not received · needs review'}save();
+    close('detailDialog');
+    toast(paid?'Payment recorded.':'Marked for review.')}
+    $('#newShift').onclick=()=>{makeDate();
+    open('createDialog')};
+    $('#previewOffer').onclick=()=>{const s=formShift();
+    if(!checkShift(s))return;
+    s.id='RR-'+String(Date.now()).slice(-5);
+    s.status='pending';
+    s.workerStatus='Awaiting worker review';
+    s.paid=0;
+    shifts.unshift(s);
+    save();
+    close('createDialog');
+    openReview(s,'new')};
+    
+    $('#workerConfirm').onclick=()=>confirmShift(activeId);
+    $('#flagChange').onclick=()=>flag(activeId);
+    $$('[data-close]').forEach(b=>b.onclick=()=>close(b.dataset.close));
+    $$('.overlay').forEach(e=>e.addEventListener('click',ev=>{if(ev.target===e)close(e.id)}));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.overlay.open').forEach(x=>close(x.id))});
+    
+    $('#receipts').addEventListener('click',e=>{const r=e.target.closest('.receipt');
+    if(r)openDetails(r.dataset.id)});
+    $('#receipts').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.receipt')){e.preventDefault();
+    openDetails(e.target.dataset.id)}});
+    $('#resetDemo').onclick=()=>{if(!window.confirm('Reset all local demo receipts to the sample data?'))return;
+    shifts=initial.map(s=>({...s}));
+    showAll=false;
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(shifts));
+    render();
+    toast('Demo data reset.')};
+    $('#showAll').onclick=()=>{showAll=!showAll;
+    render()};
+    
+    $$('.role-tab').forEach(b=>b.onclick=()=>{role=b.dataset.role;
+    $$('.role-tab').forEach(x=>x.classList.toggle('active',x===b));
+    $('#voiceTitle').textContent=role==='employer'?'Speak a new shift':'Listen to an offer';
+    $('#voiceHelp').textContent=role==='employer'?'Tap to describe the work, hours, place, and pay.':'Choose a shift to hear the terms and respond.';
+    $('#voiceHint').textContent=role==='employer'?'Try: “Two painters tomorrow, 9 to 5, at MG Road, ₹900 each.”':'Tap a receipt below to review it aloud and confirm or flag a change.';
+    $('#demoAction').textContent=role==='employer'?'▶  Fill a sample shift':'▶  Review sample offer';
+    $('#mic').setAttribute('aria-label',role==='employer'?'Start voice input':'Review sample offer')});
+    
+    function sampleShift(){ $('#work').value='Painter';
+    $('#workers').value='2';
+    $('#date').value=localIso(1);
+    $('#location').value='MG Road, Bengaluru';
+    $('#start').value='09:00';
+    $('#end').value='17:00';
+    $('#wage').value='900';
+    $('#payment').value='UPI';
+    open('createDialog') }
+    $('#demoAction').onclick=()=>{if(role==='employer')sampleShift();
+    else{const s=shifts.find(x=>x.status==='pending')||shifts[0];
+    openReview(s,'review')}};
+    
+    function applyTranscript(transcript){
+      sampleShift();
+    
+      const text=transcript.trim();
+    
+      const numberWords={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+    
+      const jobMatch=text.match(/\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(painters?|masons?|helpers?|cleaners?|workers?|electricians?|plumbers?|carpenters?|drivers?|labou?rer?s?|welders?|cooks?|waiters?|gardeners?|packers?)\b/i);
+    
+      if(jobMatch){$('#workers').value=numberWords[jobMatch[1].toLowerCase()]||jobMatch[1];
+    $('#work').value=jobMatch[2].replace(/s$/i,'').replace(/^./,c=>c.toUpperCase())}
+      const wageMatch=text.match(/(?:₹|rs\.?|rupees)\s*(\d[\d,]*)|\b(\d[\d,]*)\s*(?:rupees|rs\.?)\b/i);
+    if(wageMatch)$('#wage').value=(wageMatch[1]||wageMatch[2]).replace(/,/g,'');
+    
+      if(/\btoday\b/i.test(text))$('#date').value=localIso(0);
+    else if(/\btomorrow\b/i.test(text))$('#date').value=localIso(1);
+    
+      const timeMatch=text.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*(?:to|till|until|-)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
+    
+      if(timeMatch){const to24=(hour,minute,ampm,defaultPm)=>{let h=Number(hour);
+    if(ampm){if(ampm.toLowerCase()==='pm'&&h<12)h+=12;
+    if(ampm.toLowerCase()==='am'&&h===12)h=0}else if(defaultPm&&h<12)h+=12;
+    return `${String(h).padStart(2,'0')}:${minute||'00'}`};
+    $('#start').value=to24(timeMatch[1],timeMatch[2],timeMatch[3],false);
+    $('#end').value=to24(timeMatch[4],timeMatch[5],timeMatch[6],true)}
+      const place=text.match(/\bat\s+(.+?)(?=\s+(?:₹|rs\.?|rupees\b)|[,\.]|$)/i);
+    if(place&&place[1])$('#location').value=place[1].trim().replace(/^./,c=>c.toUpperCase());
+    
+      $('#createTitle').textContent='Check the spoken details';
+    $('#createDialog .dialog-head p').textContent='We filled in what we heard. Review every detail before sharing.';
+    open('createDialog');
+    toast('Speech captured. Check all fields before saving.')
+    }
+    $('#mic').onclick=()=>{if(role==='worker'){const s=shifts.find(x=>x.status==='pending')||shifts[0];
+    openReview(s,'review');
+    return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){sampleShift();
+    toast('Voice input is unavailable here. Sample values are ready to edit.');
+    return}recognition=new SR();
+    recognition.lang=$('#language').value;
+    recognition.interimResults=false;
+    recognition.maxAlternatives=1;
+    $('#mic').classList.add('listening');
+    $('#voiceTitle').textContent='Listening…';
+    recognition.onresult=e=>{const transcript=e.results[0][0].transcript;
+    applyTranscript(transcript)};
+    recognition.onerror=()=>toast('Could not hear that. Try again or use the sample.');
+    recognition.onend=()=>{$('#mic').classList.remove('listening');
+    if(role==='employer')$('#voiceTitle').textContent='Speak a new shift'};
+    recognition.start()};
+    
+    $('#language').onchange=()=>toast(`Voice language: ${$('#language').selectedOptions[0].textContent}`);
+    
+    $('#date').min=localIso(0);
+    $('#date').value=localIso(1);
+    render();
+    
+  </script>
+</body>
+</html>
+
