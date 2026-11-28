@@ -110,6 +110,34 @@
     font-size:9px;
     font-weight:700
   }
+  .language-explain {
+  grid-column:1/-1;
+    color:#78847c;
+    font-size:9px;
+    line-height:1.45
+  }
+  .transcript-fallback {
+  display:grid;
+    gap:8px;
+    border:1px solid #dce3dd;
+    border-radius:9px;
+    padding:10px;
+    margin:10px 0;
+    background:#fbfcfb
+  }
+  .transcript-fallback label {
+  color:#68766d;
+    font-size:10px;
+    line-height:1.45
+  }
+  .transcript-fallback textarea {
+  width:100%;
+    min-height:62px;
+    padding:8px;
+    border:1px solid #dce3dd;
+    border-radius:8px;
+    resize:vertical
+  }
   .voice-languages .lang-select {
   width:100%;
     min-width:0;
@@ -985,7 +1013,7 @@
           <section class="card how-card"><h2>Three simple steps</h2><div class="steps"><div class="step"><b>01 &nbsp; Say the work</b><span>Tell us the job, time, place, and pay.</span></div><div class="step"><b>02 &nbsp; Hear it back</b><span>Both people review the same terms.</span></div><div class="step"><b>03 &nbsp; Keep the receipt</b><span>Confirm hours and payment after work.</span></div></div></section>
         </div>
         <aside class="side-col">
-          <section class="card voice-card"><h2>Quick voice action</h2><p>Start a new shift or review an agreement. Choose the person you're using the app as.</p><div class="role-tabs"><button class="role-tab active" data-role="employer">I'm hiring</button><button class="role-tab" data-role="worker">I'm working</button></div><div class="voice-languages"><label>Hirer speaks<select id="speakerLanguage" class="lang-select" aria-label="Language the hirer speaks"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select></label><label>Worker listens<select id="language" class="lang-select" aria-label="Language the worker listens in"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select></label></div><div class="voice-row"><button class="mic" id="mic" aria-label="Start voice input">●</button><div class="mic-text"><strong id="voiceTitle">Speak a new shift</strong><small id="voiceHelp">Tap to describe the work, hours, place, and pay.</small></div></div><div class="voice-hint" id="voiceHint">Try: “Two painters tomorrow, 9 to 5, at MG Road, ₹900 each.”</div><div class="or-line">OR TRY A DEMO</div><button class="demo-link" id="demoAction">▶ &nbsp; Fill a sample shift</button><div class="trust"><b>Worker choice comes first.</b> The worker hears the terms and confirms them before a receipt is marked agreed.</div></section>
+          <section class="card voice-card"><h2>Quick voice action</h2><p>Start a new shift or review an agreement. Choose the person you're using the app as.</p><div class="role-tabs"><button class="role-tab active" data-role="employer">I'm hiring</button><button class="role-tab" data-role="worker">I'm working</button></div><div class="voice-languages"><label>Hirer speaks<select id="speakerLanguage" class="lang-select" aria-label="Language the hirer speaks"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select></label><label>Worker listens<select id="language" class="lang-select" aria-label="Language the worker listens in"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select></label><button class="text-button" id="matchLanguages" type="button">Use hirer language for worker</button><small class="language-explain" id="voiceLanguageNote">Hirer language controls recognition. Worker language controls the announcement.</small></div><div class="voice-row"><button class="mic" id="mic" aria-label="Start voice input">●</button><div class="mic-text"><strong id="voiceTitle">Speak a new shift</strong><small id="voiceHelp">Tap to describe the work, hours, place, and pay.</small></div></div><div class="transcript-fallback" id="transcriptFallback" hidden><label for="manualTranscript">If microphone recognition fails, dictate here with your device keyboard microphone or type the words.</label><textarea id="manualTranscript" rows="3"></textarea><button class="secondary" id="useTranscript" type="button">Use this transcript</button></div><div class="voice-hint" id="voiceHint">Try: “Two painters tomorrow, 9 to 5, at MG Road, ₹900 each.”</div><div class="or-line">OR TRY A DEMO</div><button class="demo-link" id="demoAction">▶ &nbsp; Fill a sample shift</button><div class="trust"><b>Worker choice comes first.</b> The worker hears the terms and confirms them before a receipt is marked agreed.</div></section>
           <div class="tip"><span class="tip-icon">✳</span><strong>Built for everyday phones.</strong><br>Large buttons, plain language, voice playback, and a typed fallback.</div>
         </aside>
       </div>
@@ -1014,8 +1042,24 @@
       'ml-IN':{'Listen to an offer':'ജോലി നിർദ്ദേശം കേൾക്കൂ','Choose a shift to hear the terms and respond.':'വ്യവസ്ഥകൾ കേട്ട് പ്രതികരിക്കാൻ ജോലി തിരഞ്ഞെടുക്കൂ.','Tap a receipt below to review it aloud and confirm or flag a change.':'താഴെയുള്ള രസീത് അമർത്തി കേൾക്കൂ; സമ്മതിക്കൂ അല്ലെങ്കിൽ മാറ്റം ചോദിക്കൂ.','Try: “Two painters tomorrow, 9 to 5, at MG Road, ₹900 each.”':'ഉദാഹരണം: “നാളെ പെയിന്റിംഗ് ജോലിക്ക് രണ്ട് പേർ വേണം, രാവിലെ 9 മുതൽ വൈകിട്ട് 5 വരെ, MG റോഡിൽ, ഒരാൾക്ക് ₹900.”','Open this app in Chrome or Edge, allow microphone access, or enter the details manually.':'ഈ ആപ്പ് Chrome അല്ലെങ്കിൽ Edge-ൽ തുറന്ന് മൈക്രോഫോൺ അനുവദിക്കൂ, അല്ലെങ്കിൽ വിവരങ്ങൾ ടൈപ്പ് ചെയ്യൂ.','Voice input is not supported in this browser. Use Chrome or Edge, or type the details.':'ഈ ബ്രൗസറിൽ ശബ്ദ ഇൻപുട്ട് പിന്തുണയില്ല. Chrome അല്ലെങ്കിൽ Edge ഉപയോഗിക്കൂ, അല്ലെങ്കിൽ ടൈപ്പ് ചെയ്യൂ.','Listening…':'കേൾക്കുന്നു…','Could not recognize speech':'സംസാരം തിരിച്ചറിയാനായില്ല','Microphone access is blocked. Allow microphone access in your browser settings.':'മൈക്രോഫോൺ അനുമതി തടഞ്ഞു. ബ്രൗസർ ക്രമീകരണത്തിൽ അനുവദിക്കൂ.','No speech was heard. Check the selected language and try speaking closer to the microphone.':'സംസാരം കേട്ടില്ല. തിരഞ്ഞെടുത്ത ഭാഷ പരിശോധിച്ച് മൈക്രോഫോണിനടുത്ത് സംസാരിക്കൂ.'}
     };
     const originalUiText=new WeakMap();
+    const voiceHelpCopy={
+      'hi-IN':['बोलने वाले की भाषा माइक्रोफ़ोन की पहचान तय करती है। कामगार की भाषा घोषणा की भाषा तय करती है।','कामगार की भाषा बोलने वाले जैसी रखें','माइक्रोफ़ोन की पहचान न चले तो डिवाइस के कीबोर्ड माइक्रोफ़ोन से यहाँ बोलें या शब्द लिखें।','इस लिखे हुए को इस्तेमाल करें'],
+      'kn-IN':['ಮಾತನಾಡುವವರ ಭಾಷೆಯನ್ನು ಮೈಕ್ ಗುರುತಿಸುತ್ತದೆ. ಕಾರ್ಮಿಕರ ಭಾಷೆಯಲ್ಲಿ ಘೋಷಣೆ ಕೇಳಿಸುತ್ತದೆ.','ಕಾರ್ಮಿಕರ ಭಾಷೆಯನ್ನು ಮಾತನಾಡುವವರ ಭಾಷೆಯಂತೆ ಮಾಡಿ','ಮೈಕ್ ಕೆಲಸ ಮಾಡದಿದ್ದರೆ ಸಾಧನದ ಕೀಬೋರ್ಡ್ ಮೈಕ್ ಬಳಸಿ ಇಲ್ಲಿ ಹೇಳಿ ಅಥವಾ ಟೈಪ್ ಮಾಡಿ.','ಈ ಬರಹವನ್ನು ಬಳಸಿ'],
+      'ta-IN':['பேசுபவரின் மொழியை மைக் அறியும். தொழிலாளர் மொழியில் அறிவிப்பு ஒலிக்கும்.','தொழிலாளர் மொழியைப் பேசுபவரின் மொழியாக்கவும்','மைக் வேலை செய்யாவிட்டால் சாதன விசைப்பலகை மைக்கில் பேசுங்கள் அல்லது இங்கே தட்டச்சு செய்யுங்கள்.','இந்த உரையைப் பயன்படுத்தவும்'],
+      'te-IN':['మాట్లాడేవారి భాషను మైక్ గుర్తిస్తుంది. కార్మికుడి భాషలో ప్రకటన వినిపిస్తుంది.','కార్మికుడి భాషను మాట్లాడేవారి భాషగా పెట్టండి','మైక్ పని చేయకపోతే పరికరం కీబోర్డ్ మైక్‌తో ఇక్కడ చెప్పండి లేదా టైప్ చేయండి.','ఈ వాక్యాన్ని ఉపయోగించండి'],
+      'ml-IN':['സംസാരിക്കുന്നയാളുടെ ഭാഷ മൈക്ക് തിരിച്ചറിയും. തൊഴിലാളിയുടെ ഭാഷയിൽ അറിയിപ്പ് കേൾക്കും.','തൊഴിലാളിയുടെ ഭാഷ സംസാരിക്കുന്നയാളുടേതാക്കുക','മൈക്ക് പ്രവർത്തിച്ചില്ലെങ്കിൽ ഉപകരണ കീബോർഡ് മൈക്കിൽ പറയുക അല്ലെങ്കിൽ ഇവിടെ ടൈപ്പ് ചെയ്യുക.','ഈ എഴുത്ത് ഉപയോഗിക്കുക']
+    };
+    const voiceStateCopy={
+      'hi-IN':{'This browser could not connect to its speech recognition service. Open the app in Chrome or Edge while online, or use the transcript box below.':'इस ब्राउज़र का आवाज़ पहचान सेवा से संपर्क नहीं हुआ। इंटरनेट के साथ Chrome या Edge खोलें, या नीचे बोलकर/लिखकर जानकारी दें।','No speech was heard':'आवाज़ नहीं सुनाई दी','Check the selected hirer language and speak one complete sentence.':'काम देने वाले की चुनी भाषा जाँचें और एक पूरा वाक्य बोलें।'},
+      'kn-IN':{'This browser could not connect to its speech recognition service. Open the app in Chrome or Edge while online, or use the transcript box below.':'ಈ ಬ್ರೌಸರ್ ಧ್ವನಿ ಗುರುತಿಸುವ ಸೇವೆಗೆ ಸಂಪರ್ಕಿಸಲಿಲ್ಲ. ಇಂಟರ್ನೆಟ್‌ನೊಂದಿಗೆ Chrome ಅಥವಾ Edge ತೆರೆಯಿರಿ, ಅಥವಾ ಕೆಳಗೆ ಮಾತನಾಡಿ/ಟೈಪ್ ಮಾಡಿ.','No speech was heard':'ಮಾತು ಕೇಳಿಸಲಿಲ್ಲ','Check the selected hirer language and speak one complete sentence.':'ಉದ್ಯೋಗದಾತರ ಆಯ್ದ ಭಾಷೆ ಪರಿಶೀಲಿಸಿ, ಒಂದು ಪೂರ್ಣ ವಾಕ್ಯ ಮಾತನಾಡಿ.'},
+      'ta-IN':{'This browser could not connect to its speech recognition service. Open the app in Chrome or Edge while online, or use the transcript box below.':'இந்த உலாவி பேச்சு அறிதல் சேவையைத் தொடர்புகொள்ளவில்லை. இணையத்துடன் Chrome அல்லது Edge-இல் திறக்கவும் அல்லது கீழே பேசித் தட்டச்சு செய்யவும்.','No speech was heard':'பேச்சு கேட்கவில்லை','Check the selected hirer language and speak one complete sentence.':'வேலை தருபவரின் மொழியைச் சரிபார்த்து ஒரு முழு வாக்கியம் பேசவும்.'},
+      'te-IN':{'This browser could not connect to its speech recognition service. Open the app in Chrome or Edge while online, or use the transcript box below.':'ఈ బ్రౌజర్ వాయిస్ గుర్తింపు సేవకు కనెక్ట్ కాలేదు. ఇంటర్నెట్‌తో Chrome లేదా Edgeలో తెరవండి లేదా కింద మాట్లాడి/టైప్ చేయండి.','No speech was heard':'మాట వినిపించలేదు','Check the selected hirer language and speak one complete sentence.':'పని ఇచ్చేవారి భాషను చూసి ఒక పూర్తి వాక్యం మాట్లాడండి.'},
+      'ml-IN':{'This browser could not connect to its speech recognition service. Open the app in Chrome or Edge while online, or use the transcript box below.':'ഈ ബ്രൗസറിന് ശബ്ദ തിരിച്ചറിയൽ സേവനവുമായി ബന്ധപ്പെടാനായില്ല. ഇന്റർനെറ്റോടെ Chrome അല്ലെങ്കിൽ Edge തുറക്കുക, അല്ലെങ്കിൽ താഴെ പറയുകയോ ടൈപ്പ് ചെയ്യുകയോ ചെയ്യുക.','No speech was heard':'സംസാരം കേട്ടില്ല','Check the selected hirer language and speak one complete sentence.':'ജോലി നൽകുന്നയാളുടെ ഭാഷ പരിശോധിച്ച് ഒരു പൂർണ്ണ വാക്യം പറയൂ.'}
+    };
+    let isRecognizing=false,recognitionError=null;
+    function applyVoiceHelp(){const copy=voiceHelpCopy[uiLang()];if(!copy)return;$('#voiceLanguageNote').textContent=copy[0];$('#matchLanguages').textContent=copy[1];$('#transcriptFallback label').textContent=copy[2];$('#useTranscript').textContent=copy[3]}
     const uiLang=()=>$('#uiLanguage')?.value||'en-IN';
-    function translateUiText(text){const dictionary={...(uiCopy[uiLang()]||{}),...(voiceUiCopy[uiLang()]||{})};if(dictionary[text])return dictionary[text];for(const english of Object.keys(dictionary)){if(text.endsWith(english))return text.slice(0,-english.length)+dictionary[english];if(text.startsWith(english))return dictionary[english]+text.slice(english.length)}return text}
+    function translateUiText(text){const dictionary={...(uiCopy[uiLang()]||{}),...(voiceUiCopy[uiLang()]||{}),...(voiceStateCopy[uiLang()]||{})};if(dictionary[text])return dictionary[text];for(const english of Object.keys(dictionary)){if(text.endsWith(english))return text.slice(0,-english.length)+dictionary[english];if(text.startsWith(english))return dictionary[english]+text.slice(english.length)}return text}
     function applyUiLanguage(){const lang=uiLang();document.documentElement.lang=lang.slice(0,2);const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;while(node=walker.nextNode()){if(!node.parentElement.closest('script,style,select#uiLanguage,select#speakerLanguage,select#language')){if(!originalUiText.has(node))originalUiText.set(node,node.nodeValue);const base=originalUiText.get(node),original=base.trim();node.nodeValue=original&&translateUiText(original)!==original?base.replace(original,translateUiText(original)):base}}$$('[aria-label]').forEach(el=>{if(!el.dataset.englishAria)el.dataset.englishAria=el.getAttribute('aria-label');el.setAttribute('aria-label',translateUiText(el.dataset.englishAria))});$$('input[placeholder]').forEach(el=>{if(!el.dataset.englishPlaceholder)el.dataset.englishPlaceholder=el.placeholder;el.placeholder=translateUiText(el.dataset.englishPlaceholder)});$$('#payment option').forEach(el=>{if(!el.dataset.english)el.dataset.english=el.textContent;el.textContent=translateUiText(el.dataset.english)})}
     let lastTranscript='',lastTranscriptLanguage='en-IN',lastWorkerAgreement='',lastWorkerLanguage='en-IN';
     
@@ -1056,6 +1100,7 @@
     $('#todayDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
     $('#showAll').textContent=showAll?'Show less':'View all';
     applyUiLanguage();
+    applyVoiceHelp();
     
     }
     function esc(x){const suffix=String.fromCharCode(59);
@@ -1345,6 +1390,7 @@
     openReview(s,'review')}};
     
     function applyTranscript(transcript){clearTranslation();
+    $('#transcriptFallback').hidden=true;
     clearFieldsForVoice();
     $('#transcriptNote').textContent=$('#speakerLanguage').value==='en-IN'?'Speech captured. Tap the button to fill the form on this device and hear the agreement in the worker language.':'Speech captured. Tap the button to translate the transcript, fill the form, and hear the agreement in the worker language.';
     $('#transcriptNote').hidden=false;
@@ -1386,33 +1432,43 @@
     else if(/\bbank\s+transfer\b/i.test(text))$('#payment').value='Bank transfer';
     else if(/\bother\s+payment\b/i.test(text))$('#payment').value='Other';
     return filled}
+    $('#matchLanguages').onclick=()=>{$('#language').value=$('#speakerLanguage').value;localStorage.setItem('rozgarreceipt-worker-language',$('#language').value);lastWorkerAgreement='';render();toast('Worker language now matches hirer language.')};
+    $('#useTranscript').onclick=()=>{const transcript=$('#manualTranscript').value.trim();if(!transcript){toast('Say or type the shift details first.');$('#manualTranscript').focus();return}$('#manualTranscript').value='';applyTranscript(transcript)};
     $('#mic').onclick=()=>{if(role==='worker'){const s=shifts.find(x=>x.status==='pending')||shifts[0];
     openReview(s,'review');
-    return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    return}if(isRecognizing){recognition?.stop();return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(!SR){$('#voiceTitle').textContent=translateUiText('Voice input is not supported');
     $('#voiceHelp').textContent=translateUiText('Open this app in Chrome or Edge, allow microphone access, or enter the details manually.');
+    $('#transcriptFallback').hidden=false;
     toast('Voice input is not supported in this browser. Use Chrome or Edge, or type the details.');
     return}recognition=new SR();
     recognition.lang=$('#speakerLanguage').value;
-    recognition.interimResults=false;
+    recognition.interimResults=true;
+    recognition.continuous=false;
     recognition.maxAlternatives=1;
+    recognitionError=null;
+    let finalTranscript='';
     $('#mic').classList.add('listening');
+    $('#mic').textContent='■';
+    $('#mic').setAttribute('aria-label','Stop voice input');
     $('#voiceTitle').textContent=translateUiText('Listening…');
-    recognition.onresult=e=>{const transcript=e.results[0][0].transcript;
-    applyTranscript(transcript)};
-    recognition.onerror=e=>{const messages={'not-allowed':'Microphone access is blocked. Allow microphone access in your browser settings.','service-not-allowed':'Speech recognition is blocked by this browser. Try Chrome or Edge.','audio-capture':'No microphone was found. Connect or enable a microphone.','no-speech':'No speech was heard. Check the selected language and try speaking closer to the microphone.','network':'Speech recognition needs an internet connection in this browser. Check your connection and try again.','language-not-supported':'This browser does not support speech recognition in the selected language. Try another browser or type the details.'};
+    recognition.onstart=()=>{isRecognizing=true;$('#voiceHelp').textContent=`Listening in ${$('#speakerLanguage').selectedOptions[0].textContent}. Speak one complete shift sentence.`};
+    recognition.onresult=e=>{let interim='';finalTranscript='';for(let i=0;i<e.results.length;i++){const result=e.results[i],words=result[0]?.transcript||'';if(result.isFinal)finalTranscript+=words+' ';else interim+=words}const heard=(finalTranscript+interim).trim();if(heard)$('#voiceHelp').textContent=`Hearing: ${heard}`};
+    recognition.onerror=e=>{recognitionError=e.error;const messages={'not-allowed':'Microphone access is blocked. Allow microphone access in your browser settings.','service-not-allowed':'Speech recognition is blocked by this browser. Try Chrome or Edge.','audio-capture':'No microphone was found. Connect or enable a microphone.','no-speech':'No speech was heard. Check the selected hirer language and speak one complete sentence.','network':'This browser could not connect to its speech recognition service. Open the app in Chrome or Edge while online, or use the transcript box below.','language-not-supported':'This browser does not support speech recognition in the selected language. Try Chrome or Edge or dictate in the transcript box below.'};
     const message=messages[e.error]||'Voice recognition failed. Check microphone permission and the selected hirer language, then try again.';
-    $('#voiceTitle').textContent=translateUiText('Could not recognize speech');$('#voiceHelp').textContent=translateUiText(message);toast(message)};
-    recognition.onend=()=>{$('#mic').classList.remove('listening');
-    if(role==='employer'&&!lastTranscript)$('#voiceTitle').textContent=translateUiText('Speak a new shift')};
-    recognition.start()};
+    $('#voiceTitle').textContent=translateUiText('Could not recognize speech');$('#voiceHelp').textContent=translateUiText(message);$('#transcriptFallback').hidden=false;toast(message)};
+    recognition.onend=()=>{$('#mic').classList.remove('listening');$('#mic').textContent='●';$('#mic').setAttribute('aria-label','Start voice input');isRecognizing=false;if(finalTranscript.trim()){applyTranscript(finalTranscript.trim());$('#transcriptFallback').hidden=true}else if(!recognitionError&&role==='employer'){$('#voiceTitle').textContent=translateUiText('No speech was heard');$('#voiceHelp').textContent=translateUiText('Check the selected hirer language and speak one complete sentence.');$('#transcriptFallback').hidden=false}};
+    try{recognition.start();isRecognizing=true}catch(error){isRecognizing=false;recognitionError='start-failed';$('#mic').classList.remove('listening');$('#mic').textContent='●';$('#mic').setAttribute('aria-label','Start voice input');$('#voiceTitle').textContent=translateUiText('Could not recognize speech');$('#voiceHelp').textContent='The microphone could not start. Check permission, then try again or use the transcript box.';$('#transcriptFallback').hidden=false}};
     
     $('#translateAndSpeak').onclick=translateAndSpeak;
     const savedUiLanguage=localStorage.getItem(UI_KEY);
     if(savedUiLanguage&&$('#uiLanguage').querySelector(`option[value="${savedUiLanguage}"]`))$('#uiLanguage').value=savedUiLanguage;
+    const savedSpeakerLanguage=localStorage.getItem('rozgarreceipt-speaker-language'),savedWorkerLanguage=localStorage.getItem('rozgarreceipt-worker-language');
+    if(savedSpeakerLanguage&&$('#speakerLanguage').querySelector(`option[value="${savedSpeakerLanguage}"]`))$('#speakerLanguage').value=savedSpeakerLanguage;
+    if(savedWorkerLanguage&&$('#language').querySelector(`option[value="${savedWorkerLanguage}"]`))$('#language').value=savedWorkerLanguage;
     $('#uiLanguage').onchange=()=>{localStorage.setItem(UI_KEY,uiLang());applyUiLanguage();render();toast('App language updated.')};
-    $('#speakerLanguage').onchange=()=>toast(`Hirer speech language: ${$('#speakerLanguage').selectedOptions[0].textContent}`);
-    $('#language').onchange=()=>{lastWorkerAgreement='';render();if(lastTranscript)updateTranslationNotice();toast(`Worker listening language: ${$('#language').selectedOptions[0].textContent}`)};
+    $('#speakerLanguage').onchange=()=>{localStorage.setItem('rozgarreceipt-speaker-language',$('#speakerLanguage').value);toast(`Hirer speech language: ${$('#speakerLanguage').selectedOptions[0].textContent}`)};
+    $('#language').onchange=()=>{localStorage.setItem('rozgarreceipt-worker-language',$('#language').value);lastWorkerAgreement='';render();if(lastTranscript)updateTranslationNotice();toast(`Worker listening language: ${$('#language').selectedOptions[0].textContent}`)};
     ['work','workers','date','location','start','end','wage','payment'].forEach(id=>{
       $('#'+id).addEventListener('input',()=>{lastWorkerAgreement=''});
       $('#'+id).addEventListener('change',()=>{lastWorkerAgreement=''});
