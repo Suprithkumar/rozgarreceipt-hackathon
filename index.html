@@ -1309,10 +1309,11 @@
     filled++}
     if(/\btoday\b/i.test(text)){ $('#date').value=localIso(0);filled++ }
     else if(/\btomorrow\b/i.test(text)){ $('#date').value=localIso(1);filled++ }
-    const timeMatch=text.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*(?:to|till|until|-)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
+    const timeMatch=text.match(/\b(\d{1,2})(?::(\d{2}))?\s*(a\.?\s*m\.?|p\.?\s*m\.?)?\s*(?:to|till|until|-)\s*(\d{1,2})(?::(\d{2}))?\s*(a\.?\s*m\.?|p\.?\s*m\.?)?\b/i);
     if(timeMatch){const to24=(hour,minute,ampm,defaultPm)=>{let h=Number(hour);
-    if(ampm){if(ampm.toLowerCase()==='pm'&&h<12)h+=12;
-    if(ampm.toLowerCase()==='am'&&h===12)h=0}else if(defaultPm&&h<12)h+=12;
+    const marker=String(ampm||'').toLowerCase().replace(/[.\s]/g,'');
+    if(marker){if(marker==='pm'&&h<12)h+=12;
+    if(marker==='am'&&h===12)h=0}else if(defaultPm&&h<12)h+=12;
     return `${String(h).padStart(2,'0')}:${minute||'00'}`};
     $('#start').value=to24(timeMatch[1],timeMatch[2],timeMatch[3],false);
     $('#end').value=to24(timeMatch[4],timeMatch[5],timeMatch[6],true);
