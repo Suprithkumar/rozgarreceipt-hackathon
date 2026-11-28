@@ -12,7 +12,7 @@ Open [http://localhost:8080](http://localhost:8080).
 
 ## Run without Docker
 
-With Python installed, run `python -m http.server 8000` from this folder, then open [http://localhost:8000](http://localhost:8000). Voice capture depends on browser speech-recognition support and microphone permission; the sample flow and typed fields work as a fallback.
+With Python installed, run `python -m http.server 8000` from this folder, then open [http://localhost:8000](http://localhost:8000). Voice playback offers English, Hindi, Kannada, Tamil, Telugu, and Malayalam, depending on the voices available in the browser/device. Voice capture uses the selected speech locale where supported. Automatic field extraction currently understands English phrases; other captured speech is shown for manual review. The sample flow and typed fields work as a fallback.
 
 ## Prototype flow
 
@@ -29,4 +29,3 @@ Demo records are stored in the browser's local storage. The prototype makes no c
 - It does not verify identity, mediate disputes, or guarantee payment.
 - The worker confirmation screen is simulated on the same device. A real pilot should let workers review privately on their own phone or with a trusted facilitator.
 - No third-party API keys or external services are required.
-
