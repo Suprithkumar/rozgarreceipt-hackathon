@@ -920,7 +920,7 @@
   <div class="app">
     <header class="topbar">
       <div class="brand"><div class="brand-mark">✓</div><div>RozgarReceipt<small>EVERY SHIFT, CLEARLY AGREED</small></div></div>
-      <div class="top-actions"><select id="language" class="lang-select" aria-label="Voice language"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option></select><div class="profile" title="Demo account">RR</div></div>
+      <div class="top-actions"><select id="language" class="lang-select" aria-label="Voice language"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select><div class="profile" title="Demo account">RR</div></div>
     </header>
     <main class="page">
       <div class="crumb">Workspace&nbsp; / &nbsp;<b>Shift receipts</b></div>
@@ -940,7 +940,7 @@
       <footer class="footer"><span>ROZGARRECEIPT · PROTOTYPE</span><span>Demo records stay on this device</span></footer>
     </main>
   </div>
-  <div class="overlay" id="createDialog" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="createTitle">Create a shift offer</h2><p>Say or type the details. You can edit everything before sharing.</p></div><button class="close" data-close="createDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="form-grid"><div class="field"><label for="work">Type of work</label><input id="work" placeholder="e.g. Painting" value="Painter"></div><div class="field"><label for="workers">Number of workers</label><input id="workers" type="number" min="1" value="2"></div><div class="field"><label for="date">Date</label><input id="date" type="date"></div><div class="field"><label for="location">Work location</label><input id="location" placeholder="e.g. MG Road"></div><div class="field"><label for="start">Start time</label><input id="start" type="time" value="09:00"></div><div class="field"><label for="end">End time</label><input id="end" type="time" value="17:00"></div><div class="field"><label for="wage">Agreed pay (₹ per worker)</label><input id="wage" type="number" min="1" value="900"></div><div class="field"><label for="payment">Payment method</label><select id="payment"><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div></div><div class="form-note">The worker will review these terms before the shift receipt is marked agreed. This prototype does not send messages or make payments.</div><div class="dialog-actions"><button class="secondary" data-close="createDialog">Cancel</button><button class="primary" id="previewOffer">Review the offer&nbsp; →</button></div></div></div></div>
+  <div class="overlay" id="createDialog" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="createTitle">Create a shift offer</h2><p>Say or type the details. You can edit everything before sharing.</p></div><button class="close" data-close="createDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="form-note" id="transcriptNote" hidden></div><div class="form-grid"><div class="field"><label for="work">Type of work</label><input id="work" placeholder="e.g. Painting" value="Painter"></div><div class="field"><label for="workers">Number of workers</label><input id="workers" type="number" min="1" value="2"></div><div class="field"><label for="date">Date</label><input id="date" type="date"></div><div class="field"><label for="location">Work location</label><input id="location" placeholder="e.g. MG Road"></div><div class="field"><label for="start">Start time</label><input id="start" type="time" value="09:00"></div><div class="field"><label for="end">End time</label><input id="end" type="time" value="17:00"></div><div class="field"><label for="wage">Agreed pay (₹ per worker)</label><input id="wage" type="number" min="1" value="900"></div><div class="field"><label for="payment">Payment method</label><select id="payment"><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div></div><div class="form-note">The worker will review these terms before the shift receipt is marked agreed. This prototype does not send messages or make payments.</div><div class="dialog-actions"><button class="secondary" data-close="createDialog">Cancel</button><button class="primary" id="previewOffer">Review the offer&nbsp; →</button></div></div></div></div>
   <div class="overlay" id="reviewDialog" role="dialog" aria-modal="true" aria-labelledby="reviewTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="reviewTitle">Worker review</h2><p>Listen to the terms. Confirm them or flag a change.</p></div><button class="close" data-close="reviewDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="review-summary" id="reviewSummary"></div><div class="confirm-row"><button class="danger" id="flagChange">Something needs changing</button><button class="primary" id="workerConfirm">I understand &amp; agree</button></div><div class="form-note">This is a demo confirmation on one device. In a real pilot, the worker would review and confirm privately on their own phone or with a trusted facilitator.</div></div></div></div>
   <div class="overlay" id="detailDialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="detailTitle">Shift receipt</h2><p id="detailSubtitle">Review the agreement and update its status.</p></div><button class="close" data-close="detailDialog" aria-label="Close">×</button></div><div class="dialog-body"><div id="detailSummary"></div><div class="complete-actions" id="detailActions"></div></div></div></div>
   <div class="toast" id="toast" role="status"></div>
@@ -965,12 +965,12 @@
     function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(shifts));
     render()}
     function money(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
-    function prettyDate(iso){if(!iso)return 'Date not set';
+    function prettyDate(iso,locale=$('#language')?.value||'en-IN'){if(!iso)return 'Date not set';
     const d=new Date(iso+'T12:00:00');
-    return d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}
-    function clock(t){if(!t)return '—';
+    return d.toLocaleDateString(locale,{weekday:'short',day:'numeric',month:'short'})}
+    function clock(t,locale=$('#language')?.value||'en-IN'){if(!t)return '—';
     const [h,m]=t.split(':').map(Number);
-    return `${((h+11)%12)+1}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`}
+    return new Date(2000,0,1,h,m).toLocaleTimeString(locale,{hour:'numeric',minute:'2-digit'})}
     function statusLabel(s){return s==='pending'?'Awaiting review':s==='confirmed'?'Agreed by both':s==='paid'?'Paid':s==='review'?'Needs review':'Work complete'}
     function render(){
       const list=showAll?shifts:shifts.slice(0,3);
@@ -1011,9 +1011,23 @@
     function checkShift(s){if(!s.work||!s.date||!s.start||!s.end||!s.location||!s.wage){toast('Please add the work, date, time, location, and pay.');
     return false}return true}
     function summaryMarkup(s){return `<div class="review-voice"><button class="review-play" id="speakTerms" aria-label="Read the shift terms aloud">▶</button><div><strong>Listen to the shift agreement</strong><span>Tap the green button to hear it read aloud</span></div></div><div class="summary-grid"><div class="summary-item"><small>Work</small><strong>${esc(s.work)} · ${s.workers} ${s.workers===1?'worker':'workers'}</strong></div><div class="summary-item"><small>Date</small><strong>${prettyDate(s.date)}</strong></div><div class="summary-item"><small>Hours</small><strong>${clock(s.start)} – ${clock(s.end)}</strong></div><div class="summary-item"><small>Location</small><strong>${esc(s.location)}</strong></div></div><div class="summary-pay"><span>Pay per worker · ${esc(s.payment)}</span><strong>${money(s.wage)}</strong></div>`}
+    const paymentNames={
+      'en-IN':{Cash:'cash',UPI:'UPI','Bank transfer':'bank transfer',Other:'another method'},
+      'hi-IN':{Cash:'नकद',UPI:'यूपीआई','Bank transfer':'बैंक ट्रांसफ़र',Other:'अन्य तरीका'},
+      'kn-IN':{Cash:'ನಗದು',UPI:'ಯುಪಿಐ','Bank transfer':'ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ',Other:'ಇತರೆ ವಿಧಾನ'},
+      'ta-IN':{Cash:'ரொக்கம்',UPI:'யூபிஐ','Bank transfer':'வங்கி பரிமாற்றம்',Other:'மற்றொரு முறை'},
+      'te-IN':{Cash:'నగదు',UPI:'యూపీఐ','Bank transfer':'బ్యాంక్ బదిలీ',Other:'ఇతర పద్ధతి'},
+      'ml-IN':{Cash:'പണം',UPI:'യുപിഐ','Bank transfer':'ബാങ്ക് ട്രാൻസ്ഫർ',Other:'മറ്റൊരു രീതി'}
+    };
     function spokenTerms(s){const lang=$('#language').value;
-    if(lang==='hi-IN')return `काम: ${s.work}। कामगार: ${s.workers}। तारीख: ${prettyDate(s.date)}। समय: ${clock(s.start)} से ${clock(s.end)}। जगह: ${s.location}। हर कामगार का भुगतान ${s.wage} रुपये, ${s.payment} से।`;
-    return `Work: ${s.work}. Workers: ${s.workers}. Date: ${prettyDate(s.date)}. Hours: ${clock(s.start)} to ${clock(s.end)}. Location: ${s.location}. Pay per worker: ${s.wage} rupees, by ${s.payment}.`}
+    const date=prettyDate(s.date,lang),start=clock(s.start,lang),end=clock(s.end,lang);
+    const payment=(paymentNames[lang]||paymentNames['en-IN'])[s.payment]||s.payment;
+    if(lang==='hi-IN')return `काम: ${s.work}। कामगार: ${s.workers}। तारीख: ${date}। समय: ${start} से ${end} तक। जगह: ${s.location}। हर कामगार का भुगतान ${s.wage} रुपये। भुगतान का तरीका: ${payment}।`;
+    if(lang==='kn-IN')return `ಕೆಲಸದ ವಿವರ: ${s.work}. ಕಾರ್ಮಿಕರ ಸಂಖ್ಯೆ: ${s.workers}. ದಿನಾಂಕ: ${date}. ಕೆಲಸದ ಸಮಯ: ${start} ರಿಂದ ${end} ವರೆಗೆ. ಸ್ಥಳ: ${s.location}. ಪ್ರತಿ ಕಾರ್ಮಿಕರ ವೇತನ: ${s.wage} ರೂಪಾಯಿ. ಪಾವತಿ ವಿಧಾನ: ${payment}.`;
+    if(lang==='ta-IN')return `வேலை: ${s.work}. தொழிலாளர்கள்: ${s.workers}. தேதி: ${date}. வேலை நேரம்: ${start} முதல் ${end} வரை. இடம்: ${s.location}. ஒவ்வொரு தொழிலாளருக்கும் கூலி: ${s.wage} ரூபாய். கட்டணம் செலுத்தும் முறை: ${payment}.`;
+    if(lang==='te-IN')return `పని: ${s.work}. కార్మికుల సంఖ్య: ${s.workers}. తేదీ: ${date}. పని సమయం: ${start} నుండి ${end} వరకు. స్థలం: ${s.location}. ఒక్కో కార్మికుడికి వేతనం: ${s.wage} రూపాయలు. చెల్లింపు విధానం: ${payment}.`;
+    if(lang==='ml-IN')return `ജോലി: ${s.work}. തൊഴിലാളികളുടെ എണ്ണം: ${s.workers}. തീയതി: ${date}. ജോലി സമയം: ${start} മുതൽ ${end} വരെ. സ്ഥലം: ${s.location}. ഓരോ തൊഴിലാളിക്കും വേതനം: ${s.wage} രൂപ. പേയ്മെന്റ് രീതി: ${payment}.`;
+    return `Work: ${s.work}. Workers: ${s.workers}. Date: ${date}. Hours: ${start} to ${end}. Location: ${s.location}. Pay per worker: ${s.wage} rupees. Payment method: ${payment}.`}
     function speak(text){if(!('speechSynthesis'in window)){toast('Audio playback is not supported in this browser.');
     return}speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
@@ -1078,6 +1092,9 @@
     close('detailDialog');
     toast(paid?'Payment recorded.':'Marked for review.')}
     $('#newShift').onclick=()=>{makeDate();
+    $('#transcriptNote').hidden=true;
+    $('#createTitle').textContent='Create a shift offer';
+    $('#createDialog .dialog-head p').textContent='Say or type the details. You can edit everything before sharing.';
     open('createDialog')};
     $('#previewOffer').onclick=()=>{const s=formShift();
     if(!checkShift(s))return;
@@ -1117,7 +1134,10 @@
     $('#demoAction').textContent=role==='employer'?'▶  Fill a sample shift':'▶  Review sample offer';
     $('#mic').setAttribute('aria-label',role==='employer'?'Start voice input':'Review sample offer')});
     
-    function sampleShift(){ $('#work').value='Painter';
+    function sampleShift(){ $('#transcriptNote').hidden=true;
+    $('#createTitle').textContent='Create a shift offer';
+    $('#createDialog .dialog-head p').textContent='Say or type the details. You can edit everything before sharing.';
+    $('#work').value='Painter';
     $('#workers').value='2';
     $('#date').value=localIso(1);
     $('#location').value='MG Road, Bengaluru';
@@ -1131,6 +1151,17 @@
     openReview(s,'review')}};
     
     function applyTranscript(transcript){
+      if($('#language').value!=='en-IN'){
+        const note=$('#transcriptNote');
+        note.textContent=`Captured speech: “${transcript}”. Automatic field filling currently supports English speech. Please review and edit every field below.`;
+        note.hidden=false;
+        $('#createTitle').textContent='Review spoken details';
+        $('#createDialog .dialog-head p').textContent='Your words were captured. Complete or correct the fields below before sharing.';
+        open('createDialog');
+        toast('Speech captured. Please review the fields.');
+        return
+      }
+      $('#transcriptNote').hidden=true;
       sampleShift();
     
       const text=transcript.trim();
@@ -1181,7 +1212,7 @@
     if(role==='employer')$('#voiceTitle').textContent='Speak a new shift'};
     recognition.start()};
     
-    $('#language').onchange=()=>toast(`Voice language: ${$('#language').selectedOptions[0].textContent}`);
+    $('#language').onchange=()=>{render();toast(`Voice language: ${$('#language').selectedOptions[0].textContent}`)};
     
     $('#date').min=localIso(0);
     $('#date').value=localIso(1);
@@ -1190,4 +1221,3 @@
   </script>
 </body>
 </html>
-
