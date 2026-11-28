@@ -1143,9 +1143,9 @@
     consent.checked=false;
     const needsWorkerTranslation=$('#language').value!=='en-IN';
     consent.disabled=!(needsTranslation||needsWorkerTranslation);
-    if(needsTranslation&&needsWorkerTranslation)$('#translationConsentText').textContent="Send the transcript and completed shift details, including the address, to MyMemory for translation. Avoid names and phone numbers.";
+    if(needsTranslation&&needsWorkerTranslation)$('#translationConsentText').textContent="Send the hirer's speech transcript and work address to MyMemory for translation. Avoid names and phone numbers.";
     else if(needsTranslation)$('#translationConsentText').textContent="Send this transcript to MyMemory to fill the form. Avoid names and phone numbers.";
-    else if(needsWorkerTranslation)$('#translationConsentText').textContent="Send the completed shift details, including the address, to MyMemory so the worker can hear the full agreement in their language. Avoid names and phone numbers.";
+    else if(needsWorkerTranslation)$('#translationConsentText').textContent="Send only the work address to MyMemory so it can be translated for the worker. Other shift details stay on this device.";
     else $('#translationConsentText').textContent='Both languages are English. Speech and form filling stay on this device.';
     $('#translateAndSpeak').textContent=(needsTranslation||needsWorkerTranslation)?'Translate, fill & read the full agreement':'Fill details and read to worker';
     if(clearResult){$('#translationResult').hidden=true;
@@ -1168,6 +1168,7 @@
     if(!response.ok||Number(data.responseStatus)!==200||!data.responseData?.translatedText)throw new Error('Translation unavailable');
     return data.responseData.translatedText}
     function englishAgreement(s){return `${s.workers} ${s.workers===1?'worker is':'workers are'} needed for ${workActivity(s)} work on ${prettyDate(s.date,'en-IN')}, from ${clock(s.start,'en-IN')} to ${clock(s.end,'en-IN')}, at ${s.location}. Pay is ${s.wage} rupees per worker. Payment method: ${s.payment||'not specified'}.`}
+    function localizedAnnouncement(s,place=s.location){const lang=$('#language').value,date=prettyDate(s.date,lang),start=clock(s.start,lang),end=clock(s.end,lang),payment=(paymentNames[lang]||paymentNames['en-IN'])[s.payment]||s.payment,key=String(s.work).toLowerCase().replace(/s$/,''),tasks={'hi-IN':{painter:'पेंटिंग',mason:'राजमिस्त्री',helper:'सहायक',cleaner:'सफ़ाई',electrician:'बिजली',plumber:'प्लंबिंग',carpenter:'बढ़ई',driver:'ड्राइविंग',laborer:'मज़दूरी',labourer:'मज़दूरी',welder:'वेल्डिंग',cook:'खाना बनाने',waiter:'खाना परोसने',gardener:'बागवानी',packer:'पैकिंग'},'kn-IN':{painter:'ಪೇಂಟಿಂಗ್',mason:'ಕಟ್ಟಡ ನಿರ್ಮಾಣ',helper:'ಸಹಾಯಕ',cleaner:'ಸ್ವಚ್ಛತಾ',electrician:'ವಿದ್ಯುತ್',plumber:'ಕೊಳಾಯಿ ದುರಸ್ತಿ',carpenter:'ಮರಗೆಲಸ',driver:'ಚಾಲನೆ',laborer:'ಸಾಮಾನ್ಯ ಕಾರ್ಮಿಕ',labourer:'ಸಾಮಾನ್ಯ ಕಾರ್ಮಿಕ',welder:'ವೆಲ್ಡಿಂಗ್',cook:'ಅಡುಗೆ',waiter:'ಊಟ ಬಡಿಸುವ',gardener:'ತೋಟಗಾರಿಕೆ',packer:'ಪ್ಯಾಕಿಂಗ್'},'ta-IN':{painter:'பெயிண்டிங்',mason:'கட்டுமான',helper:'உதவி',cleaner:'சுத்தம் செய்யும்',electrician:'மின்சார',plumber:'குழாய் பழுது பார்க்கும்',carpenter:'தச்சு',driver:'வாகனம் ஓட்டும்',laborer:'பொது தொழில்',labourer:'பொது தொழில்',welder:'வெல்டிங்',cook:'சமைக்கும்',waiter:'உணவு பரிமாறும்',gardener:'தோட்ட வேலை',packer:'பொதி செய்யும்'},'te-IN':{painter:'పెయింటింగ్',mason:'కట్టడ',helper:'సహాయక',cleaner:'శుభ్రపరిచే',electrician:'విద్యుత్',plumber:'పైపుల మరమ్మతు',carpenter:'వడ్రంగి',driver:'వాహనం నడిపే',laborer:'సాధారణ కూలీ',labourer:'సాధారణ కూలీ',welder:'వెల్డింగ్',cook:'వంట చేసే',waiter:'వడ్డించే',gardener:'తోటపని',packer:'ప్యాకింగ్'},'ml-IN':{painter:'പെയിന്റിംഗ്',mason:'കെട്ടിട നിർമ്മാണ',helper:'സഹായ',cleaner:'ശുചീകരണ',electrician:'വൈദ്യുത',plumber:'പൈപ്പ് നന്നാക്കൽ',carpenter:'മരപ്പണി',driver:'വാഹനം ഓടിക്കൽ',laborer:'പൊതു തൊഴിൽ',labourer:'പൊതു തൊഴിൽ',welder:'വെൽഡിംഗ്',cook:'പാചക',waiter:'ഭക്ഷണം വിളമ്പൽ',gardener:'തോട്ടപ്പണി',packer:'പാക്കിംഗ്'}},task=(tasks[lang]||{})[key]||((workNames[lang]||{})[key]||s.work);if(lang==='hi-IN')return `${date} को ${start} से ${end} तक ${place} में ${task} के काम के लिए ${s.workers} कामगार चाहिए। हर कामगार की मज़दूरी ${s.wage} रुपये है। भुगतान का तरीका ${payment} है।`;if(lang==='kn-IN')return `${date} ರಂದು ${start} ರಿಂದ ${end} ವರೆಗೆ ${place} ನಲ್ಲಿ ${task} ಕೆಲಸಕ್ಕೆ ${s.workers} ಕಾರ್ಮಿಕರು ಬೇಕು. ಪ್ರತಿ ಕಾರ್ಮಿಕರಿಗೆ ${s.wage} ರೂಪಾಯಿ ಕೂಲಿ. ಪಾವತಿ ವಿಧಾನ ${payment}.`;if(lang==='ta-IN')return `${date} அன்று ${start} முதல் ${end} வரை ${place} இடத்தில் ${task} வேலைக்கு ${s.workers} தொழிலாளர்கள் தேவை. ஒவ்வொருவருக்கும் ${s.wage} ரூபாய் கூலி. பணம் செலுத்தும் முறை ${payment}.`;if(lang==='te-IN')return `${date} న ${start} నుండి ${end} వరకు ${place} వద్ద ${task} పనికి ${s.workers} మంది కార్మికులు కావాలి. ఒక్కొక్కరికి ${s.wage} రూపాయల కూలి. చెల్లింపు విధానం ${payment}.`;if(lang==='ml-IN')return `${date} ന് ${start} മുതൽ ${end} വരെ ${place} ൽ ${task} ജോലിക്ക് ${s.workers} തൊഴിലാളികൾ വേണം. ഓരോരുത്തർക്കും ${s.wage} രൂപ കൂലി. പണമടയ്ക്കുന്ന രീതി ${payment}.`;return `${s.workers} ${s.workers===1?'worker is':'workers are'} needed for ${workActivity(s)} work on ${date}, from ${start} to ${end}, at ${place}. Pay is ${s.wage} rupees per worker. Payment method: ${payment||'not specified'}.`}
     async function translateAndSpeak(){if(!lastTranscript){toast('Record the shift details first.');
     return}const targetLocale=$('#language').value,source=lastTranscriptLanguage.split('-')[0],target=targetLocale.split('-')[0];
     const needsTranslation=source!=='en'||target!=='en';
@@ -1190,8 +1191,8 @@
     const complete=Boolean(s.work&&s.workers&&s.date&&s.start&&s.end&&s.location&&s.wage);
     $('#createTitle').textContent='Check the filled shift details';
     $('#createDialog .dialog-head p').textContent='Review every value. Correct anything before the worker agrees.';
-    if(complete){let workerText=spokenTerms(s),translationNote='';
-    if(target!=='en')try{workerText=await requestTranslation(englishAgreement(s),'en',target)}catch(error){translationNote='Worker translation is unavailable; the address will be read as entered.'}
+    if(complete){let workerText=localizedAnnouncement(s),translationNote='';
+    if(target!=='en')try{const addressTranslation=await requestTranslation(s.location,'en',target);workerText=localizedAnnouncement(s,addressTranslation)}catch(error){translationNote='Address translation is unavailable; the agreement is still spoken in the selected language.'}
     lastWorkerAgreement=workerText;
     lastWorkerLanguage=targetLocale;
     const sourceNote=source==='en'?`Filled ${parsed} shift details from English speech.`:`English interpretation: ${englishTranscript}`;
@@ -1219,8 +1220,8 @@
     function bindSpeak(){const b=$('#speakTerms');
     if(b)b.onclick=()=>{const s=shifts.find(x=>x.id===activeId)||formShift();
     const locale=$('#language').value;
-    if(s.workerAgreement&&s.workerLanguage===locale)speak(s.workerAgreement,locale);
-    else speak(spokenTerms(s),locale)}}
+    if(s.workerAgreementFormat===2&&s.workerAgreement&&s.workerLanguage===locale)speak(s.workerAgreement,locale);
+    else speak(localizedAnnouncement(s),locale)}}
     function openReview(s,mode){activeId=s.id;
     const locale=$('#language').value,copy=workerReviewCopy[locale]||workerReviewCopy['en-IN'];
     $('#reviewTitle').textContent=copy.title;
@@ -1230,7 +1231,7 @@
     $('#reviewSummary').innerHTML=summaryMarkup(s);
     bindSpeak();
     open('reviewDialog');
-    const agreement=s.workerAgreement&&s.workerLanguage===locale?s.workerAgreement:spokenTerms(s);
+    const agreement=s.workerAgreementFormat===2&&s.workerAgreement&&s.workerLanguage===locale?s.workerAgreement:localizedAnnouncement(s);
     speak(agreement,locale)}
     function openDetails(id){const s=shifts.find(x=>x.id===id);
     if(!s)return;
@@ -1289,7 +1290,7 @@
     open('createDialog')};
     $('#previewOffer').onclick=()=>{const s=formShift();
     if(!checkShift(s))return;
-    if(lastWorkerAgreement&&lastWorkerLanguage===$('#language').value){s.workerAgreement=lastWorkerAgreement;s.workerLanguage=lastWorkerLanguage}
+    if(lastWorkerAgreement&&lastWorkerLanguage===$('#language').value){s.workerAgreement=lastWorkerAgreement;s.workerLanguage=lastWorkerLanguage;s.workerAgreementFormat=2}
     s.id='RR-'+String(Date.now()).slice(-5);
     s.status='pending';
     s.workerStatus='Awaiting worker review';
