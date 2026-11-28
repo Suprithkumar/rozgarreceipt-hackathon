@@ -97,6 +97,58 @@
     background:#fff;
     font-size:12px
   }
+  .voice-languages {
+  display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin:12px 0 3px
+  }
+  .voice-languages label {
+  display:grid;
+    gap:5px;
+    color:#69766e;
+    font-size:9px;
+    font-weight:700
+  }
+  .voice-languages .lang-select {
+  width:100%;
+    min-width:0;
+    padding:8px 7px;
+    font-size:11px
+  }
+  .translation-panel {
+  border:1px solid #dcece0;
+    background:#f6fbf7;
+    border-radius:10px;
+    padding:12px;
+    margin:0 0 14px
+  }
+  .translation-panel>strong {
+  display:block;
+    color:#1f6248;
+    font-size:11px;
+    margin-bottom:6px
+  }
+  .translation-panel p {
+  color:#59675f;
+    font-size:10px;
+    line-height:1.5;
+    margin:0 0 9px;
+    overflow-wrap:anywhere
+  }
+  .translation-consent {
+  display:flex;
+    align-items:flex-start;
+    gap:7px;
+    color:#647168;
+    font-size:9px;
+    line-height:1.45;
+    margin:8px 0
+  }
+  .translation-consent input {
+  margin:1px 0 0;
+    flex:none
+  }
   .profile {
   width:35px;
     height:35px;
@@ -920,7 +972,7 @@
   <div class="app">
     <header class="topbar">
       <div class="brand"><div class="brand-mark">✓</div><div>RozgarReceipt<small>EVERY SHIFT, CLEARLY AGREED</small></div></div>
-      <div class="top-actions"><select id="language" class="lang-select" aria-label="Voice language"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select><div class="profile" title="Demo account">RR</div></div>
+      <div class="top-actions"><div class="profile" title="Demo account">RR</div></div>
     </header>
     <main class="page">
       <div class="crumb">Workspace&nbsp; / &nbsp;<b>Shift receipts</b></div>
@@ -933,19 +985,20 @@
           <section class="card how-card"><h2>Three simple steps</h2><div class="steps"><div class="step"><b>01 &nbsp; Say the work</b><span>Tell us the job, time, place, and pay.</span></div><div class="step"><b>02 &nbsp; Hear it back</b><span>Both people review the same terms.</span></div><div class="step"><b>03 &nbsp; Keep the receipt</b><span>Confirm hours and payment after work.</span></div></div></section>
         </div>
         <aside class="side-col">
-          <section class="card voice-card"><h2>Quick voice action</h2><p>Start a new shift or review an agreement. Choose the person you're using the app as.</p><div class="role-tabs"><button class="role-tab active" data-role="employer">I'm hiring</button><button class="role-tab" data-role="worker">I'm working</button></div><div class="voice-row"><button class="mic" id="mic" aria-label="Start voice input">●</button><div class="mic-text"><strong id="voiceTitle">Speak a new shift</strong><small id="voiceHelp">Tap to describe the work, hours, place, and pay.</small></div></div><div class="voice-hint" id="voiceHint">Try: “Two painters tomorrow, 9 to 5, at MG Road, ₹900 each.”</div><div class="or-line">OR TRY A DEMO</div><button class="demo-link" id="demoAction">▶ &nbsp; Fill a sample shift</button><div class="trust"><b>Worker choice comes first.</b> The worker hears the terms and confirms them before a receipt is marked agreed.</div></section>
+          <section class="card voice-card"><h2>Quick voice action</h2><p>Start a new shift or review an agreement. Choose the person you're using the app as.</p><div class="role-tabs"><button class="role-tab active" data-role="employer">I'm hiring</button><button class="role-tab" data-role="worker">I'm working</button></div><div class="voice-languages"><label>Hirer speaks<select id="speakerLanguage" class="lang-select" aria-label="Language the hirer speaks"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select></label><label>Worker listens<select id="language" class="lang-select" aria-label="Language the worker listens in"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select></label></div><div class="voice-row"><button class="mic" id="mic" aria-label="Start voice input">●</button><div class="mic-text"><strong id="voiceTitle">Speak a new shift</strong><small id="voiceHelp">Tap to describe the work, hours, place, and pay.</small></div></div><div class="voice-hint" id="voiceHint">Try: “Two painters tomorrow, 9 to 5, at MG Road, ₹900 each.”</div><div class="or-line">OR TRY A DEMO</div><button class="demo-link" id="demoAction">▶ &nbsp; Fill a sample shift</button><div class="trust"><b>Worker choice comes first.</b> The worker hears the terms and confirms them before a receipt is marked agreed.</div></section>
           <div class="tip"><span class="tip-icon">✳</span><strong>Built for everyday phones.</strong><br>Large buttons, plain language, voice playback, and a typed fallback.</div>
         </aside>
       </div>
       <footer class="footer"><span>ROZGARRECEIPT · PROTOTYPE</span><span>Demo records stay on this device</span></footer>
     </main>
   </div>
-  <div class="overlay" id="createDialog" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="createTitle">Create a shift offer</h2><p>Say or type the details. You can edit everything before sharing.</p></div><button class="close" data-close="createDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="form-note" id="transcriptNote" hidden></div><div class="form-grid"><div class="field"><label for="work">Type of work</label><input id="work" placeholder="e.g. Painting" value="Painter"></div><div class="field"><label for="workers">Number of workers</label><input id="workers" type="number" min="1" value="2"></div><div class="field"><label for="date">Date</label><input id="date" type="date"></div><div class="field"><label for="location">Work location</label><input id="location" placeholder="e.g. MG Road"></div><div class="field"><label for="start">Start time</label><input id="start" type="time" value="09:00"></div><div class="field"><label for="end">End time</label><input id="end" type="time" value="17:00"></div><div class="field"><label for="wage">Agreed pay (₹ per worker)</label><input id="wage" type="number" min="1" value="900"></div><div class="field"><label for="payment">Payment method</label><select id="payment"><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div></div><div class="form-note">The worker will review these terms before the shift receipt is marked agreed. This prototype does not send messages or make payments.</div><div class="dialog-actions"><button class="secondary" data-close="createDialog">Cancel</button><button class="primary" id="previewOffer">Review the offer&nbsp; →</button></div></div></div></div>
+  <div class="overlay" id="createDialog" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="createTitle">Create a shift offer</h2><p>Say or type the details. You can edit everything before sharing.</p></div><button class="close" data-close="createDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="form-note" id="transcriptNote" hidden></div><div class="translation-panel" id="translationPanel" hidden><strong id="translationHeading">Hirer said</strong><p id="sourceTranscript"></p><label class="translation-consent"><input id="translationConsent" type="checkbox"><span id="translationConsentText">Send this transcript to MyMemory's public translation service. Avoid names and phone numbers.</span></label><button class="secondary" id="translateAndSpeak" type="button">Translate and read to worker</button><div class="form-note" id="translationResult" hidden></div><p>Machine translation can be wrong. The worker should review the shift details before agreeing.</p></div><div class="form-grid"><div class="field"><label for="work">Type of work</label><input id="work" placeholder="e.g. Painting" value="Painter"></div><div class="field"><label for="workers">Number of workers</label><input id="workers" type="number" min="1" value="2"></div><div class="field"><label for="date">Date</label><input id="date" type="date"></div><div class="field"><label for="location">Work location</label><input id="location" placeholder="e.g. MG Road"></div><div class="field"><label for="start">Start time</label><input id="start" type="time" value="09:00"></div><div class="field"><label for="end">End time</label><input id="end" type="time" value="17:00"></div><div class="field"><label for="wage">Agreed pay (₹ per worker)</label><input id="wage" type="number" min="1" value="900"></div><div class="field"><label for="payment">Payment method</label><select id="payment"><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div></div><div class="form-note">The worker will review these terms before the shift receipt is marked agreed. This prototype does not send messages or make payments.</div><div class="dialog-actions"><button class="secondary" data-close="createDialog">Cancel</button><button class="primary" id="previewOffer">Review the offer&nbsp; →</button></div></div></div></div>
   <div class="overlay" id="reviewDialog" role="dialog" aria-modal="true" aria-labelledby="reviewTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="reviewTitle">Worker review</h2><p>Listen to the terms. Confirm them or flag a change.</p></div><button class="close" data-close="reviewDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="review-summary" id="reviewSummary"></div><div class="confirm-row"><button class="danger" id="flagChange">Something needs changing</button><button class="primary" id="workerConfirm">I understand &amp; agree</button></div><div class="form-note">This is a demo confirmation on one device. In a real pilot, the worker would review and confirm privately on their own phone or with a trusted facilitator.</div></div></div></div>
   <div class="overlay" id="detailDialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="detailTitle">Shift receipt</h2><p id="detailSubtitle">Review the agreement and update its status.</p></div><button class="close" data-close="detailDialog" aria-label="Close">×</button></div><div class="dialog-body"><div id="detailSummary"></div><div class="complete-actions" id="detailActions"></div></div></div></div>
   <div class="toast" id="toast" role="status"></div>
   <script>
     const STORAGE_KEY='rozgarreceipt-v1';
+    let lastTranscript='',lastTranscriptLanguage='en-IN';
     
     const initial=[
       {id:'RR-1042',work:'Painter',workers:2,date:localIso(0),location:'MG Road, Bengaluru',start:'09:00',end:'17:00',wage:900,payment:'UPI',status:'pending',workerStatus:'Awaiting worker review',paid:0},
@@ -1028,10 +1081,61 @@
     if(lang==='te-IN')return `పని: ${s.work}. కార్మికుల సంఖ్య: ${s.workers}. తేదీ: ${date}. పని సమయం: ${start} నుండి ${end} వరకు. స్థలం: ${s.location}. ఒక్కో కార్మికుడికి వేతనం: ${s.wage} రూపాయలు. చెల్లింపు విధానం: ${payment}.`;
     if(lang==='ml-IN')return `ജോലി: ${s.work}. തൊഴിലാളികളുടെ എണ്ണം: ${s.workers}. തീയതി: ${date}. ജോലി സമയം: ${start} മുതൽ ${end} വരെ. സ്ഥലം: ${s.location}. ഓരോ തൊഴിലാളിക്കും വേതനം: ${s.wage} രൂപ. പേയ്മെന്റ് രീതി: ${payment}.`;
     return `Work: ${s.work}. Workers: ${s.workers}. Date: ${date}. Hours: ${start} to ${end}. Location: ${s.location}. Pay per worker: ${s.wage} rupees. Payment method: ${payment}.`}
-    function speak(text){if(!('speechSynthesis'in window)){toast('Audio playback is not supported in this browser.');
+    function clearTranslation(){lastTranscript='';
+    $('#translationPanel').hidden=true;
+    $('#sourceTranscript').textContent='';
+    $('#translationConsent').checked=false;
+    $('#translationConsent').disabled=false;
+    $('#translationResult').hidden=true;
+    $('#translationResult').textContent=''}
+    function updateTranslationNotice(){if(!lastTranscript)return;
+    const same=lastTranscriptLanguage.split('-')[0]===$('#language').value.split('-')[0];
+    const consent=$('#translationConsent');
+    consent.disabled=same;
+    consent.checked=false;
+    $('#translationConsentText').textContent=same?'The hirer and worker languages match. The transcript stays on this device.':"Send this transcript to MyMemory's public translation service. Avoid names and phone numbers.";
+    $('#translateAndSpeak').textContent=same?'Read to worker':'Translate and read to worker';
+    $('#translationResult').hidden=true;
+    $('#translationResult').textContent=''}
+    function captureTranscript(transcript){lastTranscript=transcript.trim();
+    lastTranscriptLanguage=$('#speakerLanguage').value;
+    $('#translationHeading').textContent=`Hirer said · ${$('#speakerLanguage').selectedOptions[0].textContent}`;
+    $('#sourceTranscript').textContent=lastTranscript||'No speech was recognized.';
+    $('#translationPanel').hidden=false;
+    updateTranslationNotice()}
+    async function translateAndSpeak(){if(!lastTranscript){toast('Record a short message first.');
+    return}const targetLocale=$('#language').value,source=lastTranscriptLanguage.split('-')[0],target=targetLocale.split('-')[0];
+    let output=lastTranscript;
+    if(source!==target){if(!$('#translationConsent').checked){toast('Confirm before sending this transcript for translation.');
+    return}if(new TextEncoder().encode(lastTranscript).length>500){toast('Keep the spoken message under 500 bytes for translation.');
+    return}const button=$('#translateAndSpeak');
+    button.disabled=true;
+    button.textContent='Translating…';
+    $('#translationResult').hidden=false;
+    $('#translationResult').textContent='Translating the spoken message…';
+    try{const url=new URL('https://api.mymemory.translated.net/get');
+    url.searchParams.set('q',lastTranscript);
+    url.searchParams.set('langpair',`${source}|${target}`);
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+    let response;
+    try{response=await fetch(url,{signal:controller.signal})}finally{clearTimeout(timer)}
+    const data=await response.json();
+    if(!response.ok||Number(data.responseStatus)!==200||!data.responseData?.translatedText)throw new Error('Translation unavailable');
+    output=data.responseData.translatedText;
+    $('#translationResult').textContent=`Worker version: ${output}`;
+    $('#translationResult').hidden=false;
+    speak(output,targetLocale)}catch(error){$('#translationResult').textContent='Translation is unavailable right now. The original transcript is still here; enter or review the shift details manually.';
+    $('#translationResult').hidden=false;
+    toast('Translation unavailable. You can still review the original transcript.')}finally{button.disabled=false;
+    button.textContent=source===target?'Read to worker':'Translate and read to worker'}
+    return}
+    $('#translationResult').textContent=`Worker version: ${output}`;
+    $('#translationResult').hidden=false;
+    speak(output,targetLocale)}
+    function speak(text,locale=$('#language').value){if(!('speechSynthesis'in window)){toast('Audio playback is not supported in this browser.');
     return}speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
-    u.lang=$('#language').value;
+    u.lang=locale;
     u.rate=.88;
     speechSynthesis.speak(u)}
     function bindSpeak(){const b=$('#speakTerms');
@@ -1092,6 +1196,7 @@
     close('detailDialog');
     toast(paid?'Payment recorded.':'Marked for review.')}
     $('#newShift').onclick=()=>{makeDate();
+    clearTranslation();
     $('#transcriptNote').hidden=true;
     $('#createTitle').textContent='Create a shift offer';
     $('#createDialog .dialog-head p').textContent='Say or type the details. You can edit everything before sharing.';
@@ -1134,7 +1239,8 @@
     $('#demoAction').textContent=role==='employer'?'▶  Fill a sample shift':'▶  Review sample offer';
     $('#mic').setAttribute('aria-label',role==='employer'?'Start voice input':'Review sample offer')});
     
-    function sampleShift(){ $('#transcriptNote').hidden=true;
+    function sampleShift(){clearTranslation();
+    $('#transcriptNote').hidden=true;
     $('#createTitle').textContent='Create a shift offer';
     $('#createDialog .dialog-head p').textContent='Say or type the details. You can edit everything before sharing.';
     $('#work').value='Painter';
@@ -1151,9 +1257,19 @@
     openReview(s,'review')}};
     
     function applyTranscript(transcript){
-      if($('#language').value!=='en-IN'){
+      if($('#speakerLanguage').value!=='en-IN'){
+        clearTranslation();
+        $('#work').value='';
+        $('#workers').value='1';
+        $('#date').value=localIso(1);
+        $('#location').value='';
+        $('#start').value='';
+        $('#end').value='';
+        $('#wage').value='';
+        $('#payment').value='Cash';
+        captureTranscript(transcript);
         const note=$('#transcriptNote');
-        note.textContent=`Captured speech: “${transcript}”. Automatic field filling currently supports English speech. Please review and edit every field below.`;
+        note.textContent='Speech was captured. Automatic form filling currently works with English speech in this demo. Enter or check the shift details below.';
         note.hidden=false;
         $('#createTitle').textContent='Review spoken details';
         $('#createDialog .dialog-head p').textContent='Your words were captured. Complete or correct the fields below before sharing.';
@@ -1161,8 +1277,8 @@
         toast('Speech captured. Please review the fields.');
         return
       }
-      $('#transcriptNote').hidden=true;
       sampleShift();
+      captureTranscript(transcript);
     
       const text=transcript.trim();
     
@@ -1200,7 +1316,7 @@
     if(!SR){sampleShift();
     toast('Voice input is unavailable here. Sample values are ready to edit.');
     return}recognition=new SR();
-    recognition.lang=$('#language').value;
+    recognition.lang=$('#speakerLanguage').value;
     recognition.interimResults=false;
     recognition.maxAlternatives=1;
     $('#mic').classList.add('listening');
@@ -1212,7 +1328,9 @@
     if(role==='employer')$('#voiceTitle').textContent='Speak a new shift'};
     recognition.start()};
     
-    $('#language').onchange=()=>{render();toast(`Voice language: ${$('#language').selectedOptions[0].textContent}`)};
+    $('#translateAndSpeak').onclick=translateAndSpeak;
+    $('#speakerLanguage').onchange=()=>toast(`Hirer speech language: ${$('#speakerLanguage').selectedOptions[0].textContent}`);
+    $('#language').onchange=()=>{render();if(lastTranscript)updateTranslationNotice();toast(`Worker listening language: ${$('#language').selectedOptions[0].textContent}`)};
     
     $('#date').min=localIso(0);
     $('#date').value=localIso(1);
