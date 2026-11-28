@@ -992,7 +992,7 @@
       <footer class="footer"><span>ROZGARRECEIPT · PROTOTYPE</span><span>Demo records stay on this device</span></footer>
     </main>
   </div>
-  <div class="overlay" id="createDialog" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="createTitle">Create a shift offer</h2><p>Say or type the details. You can edit everything before sharing.</p></div><button class="close" data-close="createDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="form-note" id="transcriptNote" hidden></div><div class="translation-panel" id="translationPanel" hidden><strong id="translationHeading">Hirer said</strong><p id="sourceTranscript"></p><label class="translation-consent"><input id="translationConsent" type="checkbox"><span id="translationConsentText">Send this transcript to MyMemory's public translation service. Avoid names and phone numbers.</span></label><button class="secondary" id="translateAndSpeak" type="button">Translate and read to worker</button><div class="form-note" id="translationResult" hidden></div><p>Machine translation can be wrong. The worker should review the shift details before agreeing.</p></div><div class="form-grid"><div class="field"><label for="work">Type of work</label><input id="work" placeholder="e.g. Painting" value="Painter"></div><div class="field"><label for="workers">Number of workers</label><input id="workers" type="number" min="1" value="2"></div><div class="field"><label for="date">Date</label><input id="date" type="date"></div><div class="field"><label for="location">Work location</label><input id="location" placeholder="e.g. MG Road"></div><div class="field"><label for="start">Start time</label><input id="start" type="time" value="09:00"></div><div class="field"><label for="end">End time</label><input id="end" type="time" value="17:00"></div><div class="field"><label for="wage">Agreed pay (₹ per worker)</label><input id="wage" type="number" min="1" value="900"></div><div class="field"><label for="payment">Payment method</label><select id="payment"><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div></div><div class="form-note">The worker will review these terms before the shift receipt is marked agreed. This prototype does not send messages or make payments.</div><div class="dialog-actions"><button class="secondary" data-close="createDialog">Cancel</button><button class="primary" id="previewOffer">Review the offer&nbsp; →</button></div></div></div></div>
+  <div class="overlay" id="createDialog" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="createTitle">Create a shift offer</h2><p>Say or type the details. You can edit everything before sharing.</p></div><button class="close" data-close="createDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="form-note" id="transcriptNote" hidden></div><div class="translation-panel" id="translationPanel" hidden><strong id="translationHeading">Hirer said</strong><p id="sourceTranscript"></p><label class="translation-consent"><input id="translationConsent" type="checkbox"><span id="translationConsentText">This transcript will be translated to fill the form. Avoid names and phone numbers.</span></label><button class="secondary" id="translateAndSpeak" type="button">Fill shift details from speech</button><div class="form-note" id="translationResult" hidden></div><p>Check every filled detail. The worker will hear the agreement in their chosen language before confirming.</p></div><div class="form-grid"><div class="field"><label for="work">Type of work</label><input id="work" placeholder="e.g. Painting" value="Painter"></div><div class="field"><label for="workers">Number of workers</label><input id="workers" type="number" min="1" value="2"></div><div class="field"><label for="date">Date</label><input id="date" type="date"></div><div class="field"><label for="location">Work location</label><input id="location" placeholder="e.g. MG Road"></div><div class="field"><label for="start">Start time</label><input id="start" type="time" value="09:00"></div><div class="field"><label for="end">End time</label><input id="end" type="time" value="17:00"></div><div class="field"><label for="wage">Agreed pay (₹ per worker)</label><input id="wage" type="number" min="1" value="900"></div><div class="field"><label for="payment">Payment method</label><select id="payment"><option value="">Not specified</option><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div></div><div class="form-note">The worker will review these terms before the shift receipt is marked agreed. This prototype does not send messages or make payments.</div><div class="dialog-actions"><button class="secondary" data-close="createDialog">Cancel</button><button class="primary" id="previewOffer">Review the offer&nbsp; →</button></div></div></div></div>
   <div class="overlay" id="reviewDialog" role="dialog" aria-modal="true" aria-labelledby="reviewTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="reviewTitle">Worker review</h2><p>Listen to the terms. Confirm them or flag a change.</p></div><button class="close" data-close="reviewDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="review-summary" id="reviewSummary"></div><div class="confirm-row"><button class="danger" id="flagChange">Something needs changing</button><button class="primary" id="workerConfirm">I understand &amp; agree</button></div><div class="form-note">This is a demo confirmation on one device. In a real pilot, the worker would review and confirm privately on their own phone or with a trusted facilitator.</div></div></div></div>
   <div class="overlay" id="detailDialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="detailTitle">Shift receipt</h2><p id="detailSubtitle">Review the agreement and update its status.</p></div><button class="close" data-close="detailDialog" aria-label="Close">×</button></div><div class="dialog-body"><div id="detailSummary"></div><div class="complete-actions" id="detailActions"></div></div></div></div>
   <div class="toast" id="toast" role="status"></div>
@@ -1059,79 +1059,108 @@
     $('#start').value='09:00';
     $('#end').value='17:00';
     $('#wage').value='900';
-    $('#payment').value='Cash'}
-    function formShift(){return {work:$('#work').value.trim(),workers:Math.max(1,Number($('#workers').value)||1),date:$('#date').value,location:$('#location').value.trim(),start:$('#start').value,end:$('#end').value,wage:Math.max(0,Number($('#wage').value)||0),payment:$('#payment').value}}
-    function checkShift(s){if(!s.work||!s.date||!s.start||!s.end||!s.location||!s.wage){toast('Please add the work, date, time, location, and pay.');
+    $('#payment').value=''}
+    function formShift(){return {work:$('#work').value.trim(),workers:Math.max(0,Number($('#workers').value)||0),date:$('#date').value,location:$('#location').value.trim(),start:$('#start').value,end:$('#end').value,wage:Math.max(0,Number($('#wage').value)||0),payment:$('#payment').value}}
+    function checkShift(s){if(!s.work||!s.workers||!s.date||!s.start||!s.end||!s.location||!s.wage){toast('Please add the work, worker count, date, time, location, and pay.');
     return false}return true}
-    function summaryMarkup(s){return `<div class="review-voice"><button class="review-play" id="speakTerms" aria-label="Read the shift terms aloud">▶</button><div><strong>Listen to the shift agreement</strong><span>Tap the green button to hear it read aloud</span></div></div><div class="summary-grid"><div class="summary-item"><small>Work</small><strong>${esc(s.work)} · ${s.workers} ${s.workers===1?'worker':'workers'}</strong></div><div class="summary-item"><small>Date</small><strong>${prettyDate(s.date)}</strong></div><div class="summary-item"><small>Hours</small><strong>${clock(s.start)} – ${clock(s.end)}</strong></div><div class="summary-item"><small>Location</small><strong>${esc(s.location)}</strong></div></div><div class="summary-pay"><span>Pay per worker · ${esc(s.payment)}</span><strong>${money(s.wage)}</strong></div>`}
+    function summaryMarkup(s){const method=s.payment||'Not specified';
+    return `<div class="review-voice"><button class="review-play" id="speakTerms" aria-label="Read the shift terms aloud">▶</button><div><strong>Listen to the shift agreement</strong><span>Tap the green button to hear it read aloud</span></div></div><div class="summary-grid"><div class="summary-item"><small>Work</small><strong>${esc(s.work)} · ${s.workers} ${s.workers===1?'worker':'workers'}</strong></div><div class="summary-item"><small>Date</small><strong>${prettyDate(s.date)}</strong></div><div class="summary-item"><small>Hours</small><strong>${clock(s.start)} – ${clock(s.end)}</strong></div><div class="summary-item"><small>Location</small><strong>${esc(s.location)}</strong></div></div><div class="summary-pay"><span>Pay per worker · ${esc(method)}</span><strong>${money(s.wage)}</strong></div>`}
     const paymentNames={
-      'en-IN':{Cash:'cash',UPI:'UPI','Bank transfer':'bank transfer',Other:'another method'},
-      'hi-IN':{Cash:'नकद',UPI:'यूपीआई','Bank transfer':'बैंक ट्रांसफ़र',Other:'अन्य तरीका'},
-      'kn-IN':{Cash:'ನಗದು',UPI:'ಯುಪಿಐ','Bank transfer':'ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ',Other:'ಇತರೆ ವಿಧಾನ'},
-      'ta-IN':{Cash:'ரொக்கம்',UPI:'யூபிஐ','Bank transfer':'வங்கி பரிமாற்றம்',Other:'மற்றொரு முறை'},
-      'te-IN':{Cash:'నగదు',UPI:'యూపీఐ','Bank transfer':'బ్యాంక్ బదిలీ',Other:'ఇతర పద్ధతి'},
-      'ml-IN':{Cash:'പണം',UPI:'യുപിഐ','Bank transfer':'ബാങ്ക് ട്രാൻസ്ഫർ',Other:'മറ്റൊരു രീതി'}
+      'en-IN':{'':'not specified',Cash:'cash',UPI:'UPI','Bank transfer':'bank transfer',Other:'another method'},
+      'hi-IN':{'':'निर्दिष्ट नहीं',Cash:'नकद',UPI:'यूपीआई','Bank transfer':'बैंक ट्रांसफ़र',Other:'अन्य तरीका'},
+      'kn-IN':{'':'ನಿರ್ದಿಷ್ಟಪಡಿಸಿಲ್ಲ',Cash:'ನಗದು',UPI:'ಯುಪಿಐ','Bank transfer':'ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ',Other:'ಇತರೆ ವಿಧಾನ'},
+      'ta-IN':{'':'குறிப்பிடப்படவில்லை',Cash:'ரொக்கம்',UPI:'யூபிஐ','Bank transfer':'வங்கி பரிமாற்றம்',Other:'மற்றொரு முறை'},
+      'te-IN':{'':'పేర్కొనలేదు',Cash:'నగదు',UPI:'యూపీఐ','Bank transfer':'బ్యాంక్ బదిలీ',Other:'ఇతర పద్ధతి'},
+      'ml-IN':{'':'പറഞ്ഞിട്ടില്ല',Cash:'പണം',UPI:'യുപിഐ','Bank transfer':'ബാങ്ക് ട്രാൻസ്ഫർ',Other:'മറ്റൊരു രീതി'}
+    };
+    const workNames={
+      'hi-IN':{painter:'पेंटर',mason:'राजमिस्त्री',helper:'सहायक',cleaner:'सफाई कर्मचारी',electrician:'इलेक्ट्रीशियन',plumber:'प्लंबर',carpenter:'बढ़ई',driver:'ड्राइवर',laborer:'मज़दूर',labourer:'मज़दूर',welder:'वेल्डर',cook:'रसोइया',waiter:'वेटर',gardener:'माली',packer:'पैकर'},
+      'kn-IN':{painter:'ಬಣ್ಣದ ಕೆಲಸಗಾರ',mason:'ಮೇಸ್ತ್ರಿ',helper:'ಸಹಾಯಕ',cleaner:'ಸ್ವಚ್ಛತಾ ಕೆಲಸಗಾರ',electrician:'ವಿದ್ಯುತ್ ತಾಂತ್ರಿಕ',plumber:'ಪ್ಲಂಬರ್',carpenter:'ಬಡಗಿ',driver:'ಚಾಲಕ',laborer:'ಕಾರ್ಮಿಕ',labourer:'ಕಾರ್ಮಿಕ',welder:'ವೆಲ್ಡರ್',cook:'ಅಡುಗೆಗಾರ',waiter:'ಸೇವಕ',gardener:'ತೋಟಗಾರ',packer:'ಪ್ಯಾಕರ್'},
+      'ta-IN':{painter:'வண்ணம் பூசுபவர்',mason:'கொத்தனார்',helper:'உதவியாளர்',cleaner:'துப்புரவுப் பணியாளர்',electrician:'மின்சார தொழில்நுட்ப நிபுணர்',plumber:'குழாய் தொழிலாளர்',carpenter:'தச்சர்',driver:'ஓட்டுநர்',laborer:'தொழிலாளர்',labourer:'தொழிலாளர்',welder:'வெல்டர்',cook:'சமையல்காரர்',waiter:'பரிமாறுபவர்',gardener:'தோட்டக்காரர்',packer:'பொதி செய்பவர்'},
+      'te-IN':{painter:'రంగులు వేసే కార్మికుడు',mason:'మేస్త్రీ',helper:'సహాయకుడు',cleaner:'శుభ్రత కార్మికుడు',electrician:'ఎలక్ట్రీషియన్',plumber:'ప్లంబర్',carpenter:'వడ్రంగి',driver:'డ్రైవర్',laborer:'కార్మికుడు',labourer:'కార్మికుడు',welder:'వెల్డర్',cook:'వంటవాడు',waiter:'వడ్డించే వ్యక్తి',gardener:'తోటమాలి',packer:'ప్యాకింగ్ కార్మికుడు'},
+      'ml-IN':{painter:'പെയിന്റർ',mason:'മേസ്തിരി',helper:'സഹായി',cleaner:'ശുചീകരണ തൊഴിലാളി',electrician:'ഇലക്ട്രീഷ്യൻ',plumber:'പ്ലംബർ',carpenter:'മരപ്പണിക്കാരൻ',driver:'ഡ്രൈവർ',laborer:'തൊഴിലാളി',labourer:'തൊഴിലാളി',welder:'വെൽഡർ',cook:'പാചകക്കാരൻ',waiter:'വിളമ്പുന്നയാൾ',gardener:'തോട്ടക്കാരൻ',packer:'പാക്കിംഗ് തൊഴിലാളി'}
     };
     function spokenTerms(s){const lang=$('#language').value;
     const date=prettyDate(s.date,lang),start=clock(s.start,lang),end=clock(s.end,lang);
     const payment=(paymentNames[lang]||paymentNames['en-IN'])[s.payment]||s.payment;
-    if(lang==='hi-IN')return `काम: ${s.work}। कामगार: ${s.workers}। तारीख: ${date}। समय: ${start} से ${end} तक। जगह: ${s.location}। हर कामगार का भुगतान ${s.wage} रुपये। भुगतान का तरीका: ${payment}।`;
-    if(lang==='kn-IN')return `ಕೆಲಸದ ವಿವರ: ${s.work}. ಕಾರ್ಮಿಕರ ಸಂಖ್ಯೆ: ${s.workers}. ದಿನಾಂಕ: ${date}. ಕೆಲಸದ ಸಮಯ: ${start} ರಿಂದ ${end} ವರೆಗೆ. ಸ್ಥಳ: ${s.location}. ಪ್ರತಿ ಕಾರ್ಮಿಕರ ವೇತನ: ${s.wage} ರೂಪಾಯಿ. ಪಾವತಿ ವಿಧಾನ: ${payment}.`;
-    if(lang==='ta-IN')return `வேலை: ${s.work}. தொழிலாளர்கள்: ${s.workers}. தேதி: ${date}. வேலை நேரம்: ${start} முதல் ${end} வரை. இடம்: ${s.location}. ஒவ்வொரு தொழிலாளருக்கும் கூலி: ${s.wage} ரூபாய். கட்டணம் செலுத்தும் முறை: ${payment}.`;
-    if(lang==='te-IN')return `పని: ${s.work}. కార్మికుల సంఖ్య: ${s.workers}. తేదీ: ${date}. పని సమయం: ${start} నుండి ${end} వరకు. స్థలం: ${s.location}. ఒక్కో కార్మికుడికి వేతనం: ${s.wage} రూపాయలు. చెల్లింపు విధానం: ${payment}.`;
-    if(lang==='ml-IN')return `ജോലി: ${s.work}. തൊഴിലാളികളുടെ എണ്ണം: ${s.workers}. തീയതി: ${date}. ജോലി സമയം: ${start} മുതൽ ${end} വരെ. സ്ഥലം: ${s.location}. ഓരോ തൊഴിലാളിക്കും വേതനം: ${s.wage} രൂപ. പേയ്മെന്റ് രീതി: ${payment}.`;
-    return `Work: ${s.work}. Workers: ${s.workers}. Date: ${date}. Hours: ${start} to ${end}. Location: ${s.location}. Pay per worker: ${s.wage} rupees. Payment method: ${payment}.`}
+    const work=(workNames[lang]||{})[String(s.work).toLowerCase().replace(/s$/,'')]||s.work;
+    if(lang==='hi-IN')return `काम: ${work}। कामगार: ${s.workers}। तारीख: ${date}। समय: ${start} से ${end} तक। जगह: ${s.location}। हर कामगार का भुगतान ${s.wage} रुपये। भुगतान का तरीका: ${payment}।`;
+    if(lang==='kn-IN')return `ಕೆಲಸದ ವಿವರ: ${work}. ಕಾರ್ಮಿಕರ ಸಂಖ್ಯೆ: ${s.workers}. ದಿನಾಂಕ: ${date}. ಕೆಲಸದ ಸಮಯ: ${start} ರಿಂದ ${end} ವರೆಗೆ. ಸ್ಥಳ: ${s.location}. ಪ್ರತಿ ಕಾರ್ಮಿಕರ ವೇತನ: ${s.wage} ರೂಪಾಯಿ. ಪಾವತಿ ವಿಧಾನ: ${payment}.`;
+    if(lang==='ta-IN')return `வேலை: ${work}. தொழிலாளர்கள்: ${s.workers}. தேதி: ${date}. வேலை நேரம்: ${start} முதல் ${end} வரை. இடம்: ${s.location}. ஒவ்வொரு தொழிலாளருக்கும் கூலி: ${s.wage} ரூபாய். கட்டணம் செலுத்தும் முறை: ${payment}.`;
+    if(lang==='te-IN')return `పని: ${work}. కార్మికుల సంఖ్య: ${s.workers}. తేదీ: ${date}. పని సమయం: ${start} నుండి ${end} వరకు. స్థలం: ${s.location}. ఒక్కో కార్మికుడికి వేతనం: ${s.wage} రూపాయలు. చెల్లింపు విధానం: ${payment}.`;
+    if(lang==='ml-IN')return `ജോലി: ${work}. തൊഴിലാളികളുടെ എണ്ണം: ${s.workers}. തീയതി: ${date}. ജോലി സമയം: ${start} മുതൽ ${end} വരെ. സ്ഥലം: ${s.location}. ഓരോ തൊഴിലാളിക്കും വേതനം: ${s.wage} രൂപ. പേയ്മെന്റ് രീതി: ${payment}.`;
+    return `Work: ${work}. Workers: ${s.workers}. Date: ${date}. Hours: ${start} to ${end}. Location: ${s.location}. Pay per worker: ${s.wage} rupees. Payment method: ${payment}.`}
     function clearTranslation(){lastTranscript='';
     $('#translationPanel').hidden=true;
     $('#sourceTranscript').textContent='';
     $('#translationConsent').checked=false;
     $('#translationConsent').disabled=false;
+    $('#speakerLanguage').disabled=false;
     $('#translationResult').hidden=true;
     $('#translationResult').textContent=''}
+    function clearFieldsForVoice(){
+    $('#work').value='';
+    $('#workers').value='';
+    $('#date').value='';
+    $('#location').value='';
+    $('#start').value='';
+    $('#end').value='';
+    $('#wage').value='';
+    $('#payment').value=''}
     function updateTranslationNotice(){if(!lastTranscript)return;
-    const same=lastTranscriptLanguage.split('-')[0]===$('#language').value.split('-')[0];
+    const needsTranslation=lastTranscriptLanguage!=='en-IN';
     const consent=$('#translationConsent');
-    consent.disabled=same;
+    consent.disabled=!needsTranslation;
     consent.checked=false;
-    $('#translationConsentText').textContent=same?'The hirer and worker languages match. The transcript stays on this device.':"Send this transcript to MyMemory's public translation service. Avoid names and phone numbers.";
-    $('#translateAndSpeak').textContent=same?'Read to worker':'Translate and read to worker';
+    $('#translationConsentText').textContent=needsTranslation?"Send this transcript to MyMemory's public translation service so it can fill the form. Avoid names and phone numbers.":'English speech is processed on this device. No translation service is used.';
+    $('#translateAndSpeak').textContent=needsTranslation?'Translate and fill shift details':'Fill details and read to worker';
     $('#translationResult').hidden=true;
     $('#translationResult').textContent=''}
     function captureTranscript(transcript){lastTranscript=transcript.trim();
     lastTranscriptLanguage=$('#speakerLanguage').value;
+    $('#speakerLanguage').disabled=true;
     $('#translationHeading').textContent=`Hirer said · ${$('#speakerLanguage').selectedOptions[0].textContent}`;
     $('#sourceTranscript').textContent=lastTranscript||'No speech was recognized.';
     $('#translationPanel').hidden=false;
     updateTranslationNotice()}
-    async function translateAndSpeak(){if(!lastTranscript){toast('Record a short message first.');
-    return}const targetLocale=$('#language').value,source=lastTranscriptLanguage.split('-')[0],target=targetLocale.split('-')[0];
-    let output=lastTranscript;
-    if(source!==target){if(!$('#translationConsent').checked){toast('Confirm before sending this transcript for translation.');
+    async function translateAndSpeak(){if(!lastTranscript){toast('Record the shift details first.');
+    return}const targetLocale=$('#language').value,source=lastTranscriptLanguage.split('-')[0];
+    let englishTranscript=lastTranscript;
+    const button=$('#translateAndSpeak');
+    if(source!=='en'){if(!$('#translationConsent').checked){toast('Confirm before sending this transcript for translation.');
     return}if(new TextEncoder().encode(lastTranscript).length>500){toast('Keep the spoken message under 500 bytes for translation.');
-    return}const button=$('#translateAndSpeak');
-    button.disabled=true;
+    return}button.disabled=true;
     button.textContent='Translating…';
     $('#translationResult').hidden=false;
-    $('#translationResult').textContent='Translating the spoken message…';
+    $('#translationResult').textContent='Translating speech to fill the shift form…';
     try{const url=new URL('https://api.mymemory.translated.net/get');
     url.searchParams.set('q',lastTranscript);
-    url.searchParams.set('langpair',`${source}|${target}`);
+    url.searchParams.set('langpair',`${source}|en`);
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
     let response;
     try{response=await fetch(url,{signal:controller.signal})}finally{clearTimeout(timer)}
     const data=await response.json();
     if(!response.ok||Number(data.responseStatus)!==200||!data.responseData?.translatedText)throw new Error('Translation unavailable');
-    output=data.responseData.translatedText;
-    $('#translationResult').textContent=`Worker version: ${output}`;
+    englishTranscript=data.responseData.translatedText}catch(error){$('#translationResult').textContent='Translation is unavailable right now. The original transcript is still here; enter the details manually.';
     $('#translationResult').hidden=false;
-    speak(output,targetLocale)}catch(error){$('#translationResult').textContent='Translation is unavailable right now. The original transcript is still here; enter or review the shift details manually.';
+    toast('Translation unavailable. You can still enter the details.');
+    return}finally{button.disabled=false;
+    button.textContent='Translate and fill shift details'}}
+    const parsed=parseShiftDetails(englishTranscript);
+    const s=formShift();
+    const complete=Boolean(s.work&&s.workers&&s.date&&s.start&&s.end&&s.location&&s.wage);
+    $('#translationResult').textContent=source==='en'?`English speech recognized. I filled ${parsed} shift detail${parsed===1?'':'s'}.`:`English interpretation: ${englishTranscript}`;
     $('#translationResult').hidden=false;
-    toast('Translation unavailable. You can still review the original transcript.')}finally{button.disabled=false;
-    button.textContent=source===target?'Read to worker':'Translate and read to worker'}
-    return}
-    $('#translationResult').textContent=`Worker version: ${output}`;
-    $('#translationResult').hidden=false;
-    speak(output,targetLocale)}
+    $('#createTitle').textContent='Check the filled shift details';
+    $('#createDialog .dialog-head p').textContent='Review every value. Correct anything before the worker agrees.';
+    if(complete){$('#transcriptNote').textContent='The details were filled from speech. The worker will hear the structured agreement in their selected language now.';
+    $('#transcriptNote').hidden=false;
+    speak(spokenTerms(s),targetLocale);
+    toast('Shift details filled and read aloud. Check every field.')}
+    else{$('#transcriptNote').textContent='I filled in what I could. Complete any missing details, then review the agreement.';
+    $('#transcriptNote').hidden=false;
+    toast('Some details were not recognized. Complete the missing fields.')}
+    open('createDialog')}
     function speak(text,locale=$('#language').value){if(!('speechSynthesis'in window)){toast('Audio playback is not supported in this browser.');
     return}speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
@@ -1256,60 +1285,46 @@
     else{const s=shifts.find(x=>x.status==='pending')||shifts[0];
     openReview(s,'review')}};
     
-    function applyTranscript(transcript){
-      if($('#speakerLanguage').value!=='en-IN'){
-        clearTranslation();
-        $('#work').value='';
-        $('#workers').value='1';
-        $('#date').value=localIso(1);
-        $('#location').value='';
-        $('#start').value='';
-        $('#end').value='';
-        $('#wage').value='';
-        $('#payment').value='Cash';
-        captureTranscript(transcript);
-        const note=$('#transcriptNote');
-        note.textContent='Speech was captured. Automatic form filling currently works with English speech in this demo. Enter or check the shift details below.';
-        note.hidden=false;
-        $('#createTitle').textContent='Review spoken details';
-        $('#createDialog .dialog-head p').textContent='Your words were captured. Complete or correct the fields below before sharing.';
-        open('createDialog');
-        toast('Speech captured. Please review the fields.');
-        return
-      }
-      sampleShift();
-      captureTranscript(transcript);
-    
-      const text=transcript.trim();
-    
-      const numberWords={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
-    
-      const jobMatch=text.match(/\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(painters?|masons?|helpers?|cleaners?|workers?|electricians?|plumbers?|carpenters?|drivers?|labou?rer?s?|welders?|cooks?|waiters?|gardeners?|packers?)\b/i);
-    
-      if(jobMatch){$('#workers').value=numberWords[jobMatch[1].toLowerCase()]||jobMatch[1];
-    $('#work').value=jobMatch[2].replace(/s$/i,'').replace(/^./,c=>c.toUpperCase())}
-      const wageMatch=text.match(/(?:₹|rs\.?|rupees)\s*(\d[\d,]*)|\b(\d[\d,]*)\s*(?:rupees|rs\.?)\b/i);
-    if(wageMatch)$('#wage').value=(wageMatch[1]||wageMatch[2]).replace(/,/g,'');
-    
-      if(/\btoday\b/i.test(text))$('#date').value=localIso(0);
-    else if(/\btomorrow\b/i.test(text))$('#date').value=localIso(1);
-    
-      const timeMatch=text.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*(?:to|till|until|-)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
-    
-      if(timeMatch){const to24=(hour,minute,ampm,defaultPm)=>{let h=Number(hour);
+    function applyTranscript(transcript){clearTranslation();
+    clearFieldsForVoice();
+    $('#transcriptNote').textContent=$('#speakerLanguage').value==='en-IN'?'Speech captured. Tap the button to fill the form on this device and hear the agreement in the worker language.':'Speech captured. Tap the button to translate the transcript, fill the form, and hear the agreement in the worker language.';
+    $('#transcriptNote').hidden=false;
+    $('#createTitle').textContent='Check the spoken details';
+    $('#createDialog .dialog-head p').textContent='Review every filled value. Correct anything before the worker agrees.';
+    captureTranscript(transcript);
+    open('createDialog')}
+    function parseShiftDetails(transcript){const text=transcript.trim();
+    let filled=0;
+    const numberWords={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+    const jobs='painters?|masons?|helpers?|cleaners?|electricians?|plumbers?|carpenters?|drivers?|laborers?|labourers?|welders?|cooks?|waiters?|gardeners?|packers?';
+    const countMatch=text.match(new RegExp(`\\b(\\d+|one|two|three|four|five|six|seven|eight|nine|ten)\\s+(?:${jobs}|workers?|people)\\b`,'i'));
+    if(countMatch){$('#workers').value=numberWords[countMatch[1].toLowerCase()]||countMatch[1];
+    filled++}
+    const workMatch=text.match(new RegExp(`\\b(${jobs})\\b`,'i'));
+    if(workMatch){const normalized=workMatch[1].toLowerCase().replace(/s$/,'');
+    $('#work').value=normalized==='laborer'?'Laborer':normalized==='labourer'?'Labourer':normalized.charAt(0).toUpperCase()+normalized.slice(1);
+    filled++}
+    const wageMatch=text.match(/(?:₹|rs\.?|rupees?|inr)\s*(\d[\d,]*)|\b(\d[\d,]*)\s*(?:rupees?|rs\.?|inr)\b/i);
+    if(wageMatch){$('#wage').value=(wageMatch[1]||wageMatch[2]).replace(/,/g,'');
+    filled++}
+    if(/\btoday\b/i.test(text)){ $('#date').value=localIso(0);filled++ }
+    else if(/\btomorrow\b/i.test(text)){ $('#date').value=localIso(1);filled++ }
+    const timeMatch=text.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*(?:to|till|until|-)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
+    if(timeMatch){const to24=(hour,minute,ampm,defaultPm)=>{let h=Number(hour);
     if(ampm){if(ampm.toLowerCase()==='pm'&&h<12)h+=12;
     if(ampm.toLowerCase()==='am'&&h===12)h=0}else if(defaultPm&&h<12)h+=12;
     return `${String(h).padStart(2,'0')}:${minute||'00'}`};
     $('#start').value=to24(timeMatch[1],timeMatch[2],timeMatch[3],false);
-    $('#end').value=to24(timeMatch[4],timeMatch[5],timeMatch[6],true)}
-      const place=text.match(/\bat\s+(.+?)(?=\s+(?:₹|rs\.?|rupees\b)|[,\.]|$)/i);
-    if(place&&place[1])$('#location').value=place[1].trim().replace(/^./,c=>c.toUpperCase());
-    
-      $('#createTitle').textContent='Check the spoken details';
-    $('#createDialog .dialog-head p').textContent='We filled in what we heard. Review every detail before sharing.';
-    open('createDialog');
-    toast('Speech captured. Check all fields before saving.')
-    }
+    $('#end').value=to24(timeMatch[4],timeMatch[5],timeMatch[6],true);
+    filled++}
+    const place=text.match(/\b(?:at|location(?:\s+is)?|place(?:\s+is)?)\s+(.+?)(?=\s+(?:₹|rs\.?|rupees?\b|inr\b)|[,;.!?]|$)/i);
+    if(place&&place[1]){$('#location').value=place[1].trim().replace(/^./,c=>c.toUpperCase());
+    filled++}
+    if(/\bupi\b/i.test(text))$('#payment').value='UPI';
+    else if(/\bcash\b/i.test(text))$('#payment').value='Cash';
+    else if(/\bbank\s+transfer\b/i.test(text))$('#payment').value='Bank transfer';
+    else if(/\bother\s+payment\b/i.test(text))$('#payment').value='Other';
+    return filled}
     $('#mic').onclick=()=>{if(role==='worker'){const s=shifts.find(x=>x.status==='pending')||shifts[0];
     openReview(s,'review');
     return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
