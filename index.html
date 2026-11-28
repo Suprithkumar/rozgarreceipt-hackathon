@@ -998,7 +998,7 @@
   <div class="toast" id="toast" role="status"></div>
   <script>
     const STORAGE_KEY='rozgarreceipt-v1';
-    let lastTranscript='',lastTranscriptLanguage='en-IN';
+    let lastTranscript='',lastTranscriptLanguage='en-IN',lastWorkerAgreement='',lastWorkerLanguage='en-IN';
     
     const initial=[
       {id:'RR-1042',work:'Painter',workers:2,date:localIso(0),location:'MG Road, Bengaluru',start:'09:00',end:'17:00',wage:900,payment:'UPI',status:'pending',workerStatus:'Awaiting worker review',paid:0},
@@ -1091,6 +1091,7 @@
     if(lang==='ml-IN')return `ജോലി: ${work}. തൊഴിലാളികളുടെ എണ്ണം: ${s.workers}. തീയതി: ${date}. ജോലി സമയം: ${start} മുതൽ ${end} വരെ. സ്ഥലം: ${s.location}. ഓരോ തൊഴിലാളിക്കും വേതനം: ${s.wage} രൂപ. പേയ്മെന്റ് രീതി: ${payment}.`;
     return `Work: ${work}. Workers: ${s.workers}. Date: ${date}. Hours: ${start} to ${end}. Location: ${s.location}. Pay per worker: ${s.wage} rupees. Payment method: ${payment}.`}
     function clearTranslation(){lastTranscript='';
+    lastWorkerAgreement='';
     $('#translationPanel').hidden=true;
     $('#sourceTranscript').textContent='';
     $('#translationConsent').checked=false;
@@ -1107,15 +1108,19 @@
     $('#end').value='';
     $('#wage').value='';
     $('#payment').value=''}
-    function updateTranslationNotice(){if(!lastTranscript)return;
+    function updateTranslationNotice(clearResult=true){if(!lastTranscript)return;
     const needsTranslation=lastTranscriptLanguage!=='en-IN';
     const consent=$('#translationConsent');
-    consent.disabled=!needsTranslation;
     consent.checked=false;
-    $('#translationConsentText').textContent=needsTranslation?"Send this transcript to MyMemory's public translation service so it can fill the form. Avoid names and phone numbers.":'English speech is processed on this device. No translation service is used.';
-    $('#translateAndSpeak').textContent=needsTranslation?'Translate and fill shift details':'Fill details and read to worker';
-    $('#translationResult').hidden=true;
-    $('#translationResult').textContent=''}
+    const needsWorkerTranslation=$('#language').value!=='en-IN';
+    consent.disabled=!(needsTranslation||needsWorkerTranslation);
+    if(needsTranslation&&needsWorkerTranslation)$('#translationConsentText').textContent="Send the transcript and completed shift details, including the address, to MyMemory for translation. Avoid names and phone numbers.";
+    else if(needsTranslation)$('#translationConsentText').textContent="Send this transcript to MyMemory to fill the form. Avoid names and phone numbers.";
+    else if(needsWorkerTranslation)$('#translationConsentText').textContent="Send the completed shift details, including the address, to MyMemory so the worker can hear the full agreement in their language. Avoid names and phone numbers.";
+    else $('#translationConsentText').textContent='Both languages are English. Speech and form filling stay on this device.';
+    $('#translateAndSpeak').textContent=(needsTranslation||needsWorkerTranslation)?'Translate, fill & read the full agreement':'Fill details and read to worker';
+    if(clearResult){$('#translationResult').hidden=true;
+    $('#translationResult').textContent=''}}
     function captureTranscript(transcript){lastTranscript=transcript.trim();
     lastTranscriptLanguage=$('#speakerLanguage').value;
     $('#speakerLanguage').disabled=true;
@@ -1123,43 +1128,58 @@
     $('#sourceTranscript').textContent=lastTranscript||'No speech was recognized.';
     $('#translationPanel').hidden=false;
     updateTranslationNotice()}
-    async function translateAndSpeak(){if(!lastTranscript){toast('Record the shift details first.');
-    return}const targetLocale=$('#language').value,source=lastTranscriptLanguage.split('-')[0];
-    let englishTranscript=lastTranscript;
-    const button=$('#translateAndSpeak');
-    if(source!=='en'){if(!$('#translationConsent').checked){toast('Confirm before sending this transcript for translation.');
-    return}if(new TextEncoder().encode(lastTranscript).length>500){toast('Keep the spoken message under 500 bytes for translation.');
-    return}button.disabled=true;
-    button.textContent='Translating…';
-    $('#translationResult').hidden=false;
-    $('#translationResult').textContent='Translating speech to fill the shift form…';
-    try{const url=new URL('https://api.mymemory.translated.net/get');
-    url.searchParams.set('q',lastTranscript);
-    url.searchParams.set('langpair',`${source}|en`);
+    async function requestTranslation(text,source,target){if(new TextEncoder().encode(text).length>500)throw new Error('Message is longer than the translation limit');
+    const url=new URL('https://api.mymemory.translated.net/get');
+    url.searchParams.set('q',text);
+    url.searchParams.set('langpair',`${source}|${target}`);
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
     let response;
     try{response=await fetch(url,{signal:controller.signal})}finally{clearTimeout(timer)}
     const data=await response.json();
     if(!response.ok||Number(data.responseStatus)!==200||!data.responseData?.translatedText)throw new Error('Translation unavailable');
-    englishTranscript=data.responseData.translatedText}catch(error){$('#translationResult').textContent='Translation is unavailable right now. The original transcript is still here; enter the details manually.';
+    return data.responseData.translatedText}
+    function englishAgreement(s){return `Shift agreement. Work: ${s.work}. Number of workers: ${s.workers}. Date: ${prettyDate(s.date,'en-IN')}. Hours: ${clock(s.start,'en-IN')} to ${clock(s.end,'en-IN')}. Work location and address: ${s.location}. Pay per worker: ${s.wage} rupees. Payment method: ${s.payment||'not specified'}.`}
+    async function translateAndSpeak(){if(!lastTranscript){toast('Record the shift details first.');
+    return}const targetLocale=$('#language').value,source=lastTranscriptLanguage.split('-')[0],target=targetLocale.split('-')[0];
+    const needsTranslation=source!=='en'||target!=='en';
+    if(needsTranslation&&!$('#translationConsent').checked){toast('Confirm before sending the speech and address for translation.');
+    return}const button=$('#translateAndSpeak');
+    button.disabled=true;
+    button.textContent='Translating…';
+    let englishTranscript=lastTranscript;
+    try{if(source!=='en'){
+    $('#translationResult').hidden=false;
+    $('#translationResult').textContent='Translating speech to fill the shift form…';
+    englishTranscript=await requestTranslation(lastTranscript,source,'en')}}
+    catch(error){$('#translationResult').textContent='Translation is unavailable right now. The original transcript is still here; enter the details manually.';
     $('#translationResult').hidden=false;
     toast('Translation unavailable. You can still enter the details.');
-    return}finally{button.disabled=false;
-    button.textContent='Translate and fill shift details'}}
-    const parsed=parseShiftDetails(englishTranscript);
-    const s=formShift();
+    button.disabled=false;
+    updateTranslationNotice(false);
+    return}
+    const parsed=parseShiftDetails(englishTranscript),s=formShift();
     const complete=Boolean(s.work&&s.workers&&s.date&&s.start&&s.end&&s.location&&s.wage);
-    $('#translationResult').textContent=source==='en'?`English speech recognized. I filled ${parsed} shift detail${parsed===1?'':'s'}.`:`English interpretation: ${englishTranscript}`;
-    $('#translationResult').hidden=false;
     $('#createTitle').textContent='Check the filled shift details';
     $('#createDialog .dialog-head p').textContent='Review every value. Correct anything before the worker agrees.';
-    if(complete){$('#transcriptNote').textContent='The details were filled from speech. The worker will hear the structured agreement in their selected language now.';
+    if(complete){let workerText=spokenTerms(s),translationNote='';
+    if(target!=='en')try{workerText=await requestTranslation(englishAgreement(s),'en',target)}catch(error){translationNote='Worker translation is unavailable; the address will be read as entered.'}
+    lastWorkerAgreement=workerText;
+    lastWorkerLanguage=targetLocale;
+    const sourceNote=source==='en'?`Filled ${parsed} shift details from English speech.`:`English interpretation: ${englishTranscript}`;
+    $('#translationResult').textContent=`${sourceNote} Worker agreement: ${workerText}. ${translationNote}`;
+    $('#translationResult').hidden=false;
+    $('#transcriptNote').textContent='The details were filled from speech. The worker will hear the full agreement, including the address, in their selected language.';
     $('#transcriptNote').hidden=false;
-    speak(spokenTerms(s),targetLocale);
+    speak(workerText,targetLocale);
     toast('Shift details filled and read aloud. Check every field.')}
-    else{$('#transcriptNote').textContent='I filled in what I could. Complete any missing details, then review the agreement.';
+    else{lastWorkerAgreement='';
+    $('#translationResult').textContent=source==='en'?`English speech recognized. I filled ${parsed} shift detail${parsed===1?'':'s'}.`:`English interpretation: ${englishTranscript}`;
+    $('#translationResult').hidden=false;
+    $('#transcriptNote').textContent='I filled in what I could. Complete any missing details, then review the agreement.';
     $('#transcriptNote').hidden=false;
     toast('Some details were not recognized. Complete the missing fields.')}
+    button.disabled=false;
+    updateTranslationNotice(false);
     open('createDialog')}
     function speak(text,locale=$('#language').value){if(!('speechSynthesis'in window)){toast('Audio playback is not supported in this browser.');
     return}speechSynthesis.cancel();
@@ -1169,7 +1189,9 @@
     speechSynthesis.speak(u)}
     function bindSpeak(){const b=$('#speakTerms');
     if(b)b.onclick=()=>{const s=shifts.find(x=>x.id===activeId)||formShift();
-    speak(spokenTerms(s))}}
+    const locale=$('#language').value;
+    if(s.workerAgreement&&s.workerLanguage===locale)speak(s.workerAgreement,locale);
+    else speak(spokenTerms(s),locale)}}
     function openReview(s,mode){activeId=s.id;
     $('#reviewTitle').textContent=mode==='new'?'Worker review':'Review the shift terms';
     $('#reviewSummary').innerHTML=summaryMarkup(s);
@@ -1232,6 +1254,7 @@
     open('createDialog')};
     $('#previewOffer').onclick=()=>{const s=formShift();
     if(!checkShift(s))return;
+    if(lastWorkerAgreement&&lastWorkerLanguage===$('#language').value){s.workerAgreement=lastWorkerAgreement;s.workerLanguage=lastWorkerLanguage}
     s.id='RR-'+String(Date.now()).slice(-5);
     s.status='pending';
     s.workerStatus='Awaiting worker review';
@@ -1346,7 +1369,11 @@
     
     $('#translateAndSpeak').onclick=translateAndSpeak;
     $('#speakerLanguage').onchange=()=>toast(`Hirer speech language: ${$('#speakerLanguage').selectedOptions[0].textContent}`);
-    $('#language').onchange=()=>{render();if(lastTranscript)updateTranslationNotice();toast(`Worker listening language: ${$('#language').selectedOptions[0].textContent}`)};
+    $('#language').onchange=()=>{lastWorkerAgreement='';render();if(lastTranscript)updateTranslationNotice();toast(`Worker listening language: ${$('#language').selectedOptions[0].textContent}`)};
+    ['work','workers','date','location','start','end','wage','payment'].forEach(id=>{
+      $('#'+id).addEventListener('input',()=>{lastWorkerAgreement=''});
+      $('#'+id).addEventListener('change',()=>{lastWorkerAgreement=''});
+    });
     
     $('#date').min=localIso(0);
     $('#date').value=localIso(1);
