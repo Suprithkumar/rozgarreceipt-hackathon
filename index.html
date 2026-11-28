@@ -734,6 +734,37 @@
     padding:16px;
     margin:15px 0
   }
+  .announcement-copy {
+  border:1px solid #cce5d4;
+    background:#f3faf5;
+    border-radius:10px;
+    padding:13px;
+    margin-bottom:13px
+  }
+  .announcement-copy b {
+  display:block;
+    color:#31523d;
+    font-size:10px;
+    margin-bottom:6px
+  }
+  .announcement-copy p {
+  margin:0;
+    color:#203b2c;
+    font-size:13px;
+    line-height:1.7
+  }
+  .review-language-picker {
+  display:flex;
+    align-items:center;
+    gap:8px;
+    color:#59675f;
+    font-size:10px;
+    font-weight:700;
+    margin-bottom:10px
+  }
+  .review-language-picker select {
+  min-width:135px
+  }
   .review-voice {
   display:flex;
     align-items:center;
@@ -1021,7 +1052,7 @@
     </main>
   </div>
   <div class="overlay" id="createDialog" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="createTitle">Create a shift offer</h2><p>Say or type the details. You can edit everything before sharing.</p></div><button class="close" data-close="createDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="form-note" id="transcriptNote" hidden></div><div class="translation-panel" id="translationPanel" hidden><strong id="translationHeading">Hirer said</strong><p id="sourceTranscript"></p><label class="translation-consent"><input id="translationConsent" type="checkbox"><span id="translationConsentText">This transcript will be translated to fill the form. Avoid names and phone numbers.</span></label><button class="secondary" id="translateAndSpeak" type="button">Fill shift details from speech</button><div class="form-note" id="translationResult" hidden></div><p>Check every filled detail. The worker will hear the agreement in their chosen language before confirming.</p></div><div class="form-grid"><div class="field"><label for="work">Type of work</label><input id="work" placeholder="e.g. Painting" value="Painter"></div><div class="field"><label for="workers">Number of workers</label><input id="workers" type="number" min="1" value="2"></div><div class="field"><label for="date">Date</label><input id="date" type="date"></div><div class="field"><label for="location">Work location</label><input id="location" placeholder="e.g. MG Road"></div><div class="field"><label for="start">Start time</label><input id="start" type="time" value="09:00"></div><div class="field"><label for="end">End time</label><input id="end" type="time" value="17:00"></div><div class="field"><label for="wage">Agreed pay (₹ per worker)</label><input id="wage" type="number" min="1" value="900"></div><div class="field"><label for="payment">Payment method</label><select id="payment"><option value="">Not specified</option><option>Cash</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></div></div><div class="form-note">The worker will review these terms before the shift receipt is marked agreed. This prototype does not send messages or make payments.</div><div class="dialog-actions"><button class="secondary" data-close="createDialog">Cancel</button><button class="primary" id="previewOffer">Review the offer&nbsp; →</button></div></div></div></div>
-  <div class="overlay" id="reviewDialog" role="dialog" aria-modal="true" aria-labelledby="reviewTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="reviewTitle">Worker review</h2><p>Listen to the terms. Confirm them or flag a change.</p></div><button class="close" data-close="reviewDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="review-summary" id="reviewSummary"></div><div class="confirm-row"><button class="danger" id="flagChange">Something needs changing</button><button class="primary" id="workerConfirm">I understand &amp; agree</button></div><div class="form-note">This is a demo confirmation on one device. In a real pilot, the worker would review and confirm privately on their own phone or with a trusted facilitator.</div></div></div></div>
+  <div class="overlay" id="reviewDialog" role="dialog" aria-modal="true" aria-labelledby="reviewTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="reviewTitle">Worker review</h2><p>Listen to the terms. Confirm them or flag a change.</p></div><button class="close" data-close="reviewDialog" aria-label="Close">×</button></div><div class="dialog-body"><label class="review-language-picker" for="reviewLanguage">Worker listens<select id="reviewLanguage" class="lang-select"><option value="en-IN">English</option><option value="hi-IN">हिंदी</option><option value="kn-IN">ಕನ್ನಡ</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="ml-IN">മലയാളം</option></select></label><div class="review-summary" id="reviewSummary"></div><div class="confirm-row"><button class="danger" id="flagChange">Something needs changing</button><button class="primary" id="workerConfirm">I understand &amp; agree</button></div><div class="form-note">This is a demo confirmation on one device. In a real pilot, the worker would review and confirm privately on their own phone or with a trusted facilitator.</div></div></div></div>
   <div class="overlay" id="detailDialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="dialog"><div class="dialog-head"><div><h2 id="detailTitle">Shift receipt</h2><p id="detailSubtitle">Review the agreement and update its status.</p></div><button class="close" data-close="detailDialog" aria-label="Close">×</button></div><div class="dialog-body"><div id="detailSummary"></div><div class="complete-actions" id="detailActions"></div></div></div></div>
   <div class="toast" id="toast" role="status"></div>
   <script>
@@ -1128,8 +1159,8 @@
     function formShift(){return {work:$('#work').value.trim(),workers:Math.max(0,Number($('#workers').value)||0),date:$('#date').value,location:$('#location').value.trim(),start:$('#start').value,end:$('#end').value,wage:Math.max(0,Number($('#wage').value)||0),payment:$('#payment').value}}
     function checkShift(s){if(!s.work||!s.workers||!s.date||!s.start||!s.end||!s.location||!s.wage){toast('Please add the work, worker count, date, time, location, and pay.');
     return false}return true}
-    function summaryMarkup(s){const method=s.payment||'Not specified';
-    return `<div class="review-voice"><button class="review-play" id="speakTerms" aria-label="Read the shift terms aloud">▶</button><div><strong>Listen to the shift agreement</strong><span>Tap the green button to hear it read aloud</span></div></div><div class="summary-grid"><div class="summary-item"><small>Work</small><strong>${esc(s.work)} · ${s.workers} ${s.workers===1?'worker':'workers'}</strong></div><div class="summary-item"><small>Date</small><strong>${prettyDate(s.date)}</strong></div><div class="summary-item"><small>Hours</small><strong>${clock(s.start)} – ${clock(s.end)}</strong></div><div class="summary-item"><small>Location</small><strong>${esc(s.location)}</strong></div></div><div class="summary-pay"><span>Pay per worker · ${esc(method)}</span><strong>${money(s.wage)}</strong></div>`}
+    function summaryMarkup(s){const method=s.payment||'Not specified',locale=$('#language').value,labels={'en-IN':'Full spoken announcement','hi-IN':'पूरा बोलकर सुनाया जाने वाला संदेश','kn-IN':'ಪೂರ್ಣವಾಗಿ ಕೇಳಿಸುವ ಕೆಲಸದ ಪ್ರಕಟಣೆ','ta-IN':'முழு வேலை அறிவிப்பு','te-IN':'పూర్తి పని ప్రకటన','ml-IN':'മുഴുവൻ ജോലി അറിയിപ്പ്'},announcement=s.workerAgreementFormat===2&&s.workerAgreement&&s.workerLanguage===locale?s.workerAgreement:localizedAnnouncement(s);
+    return `<div class="announcement-copy" lang="${locale.slice(0,2)}"><b>${labels[locale]||labels['en-IN']}</b><p>${esc(announcement)}</p></div><div class="review-voice"><button class="review-play" id="speakTerms" aria-label="Read the shift terms aloud">▶</button><div><strong>Listen to the shift agreement</strong><span>Tap the green button to hear it read aloud</span></div></div><div class="summary-grid"><div class="summary-item"><small>Work</small><strong>${esc(s.work)} · ${s.workers} ${s.workers===1?'worker':'workers'}</strong></div><div class="summary-item"><small>Date</small><strong>${prettyDate(s.date)}</strong></div><div class="summary-item"><small>Hours</small><strong>${clock(s.start)} – ${clock(s.end)}</strong></div><div class="summary-item"><small>Location</small><strong>${esc(s.location)}</strong></div></div><div class="summary-pay"><span>Pay per worker · ${esc(method)}</span><strong>${money(s.wage)}</strong></div>`}
     const paymentNames={
       'en-IN':{'':'not specified',Cash:'cash',UPI:'UPI','Bank transfer':'bank transfer',Other:'another method'},
       'hi-IN':{'':'निर्दिष्ट नहीं',Cash:'नकद',UPI:'यूपीआई','Bank transfer':'बैंक ट्रांसफ़र',Other:'अन्य तरीका'},
@@ -1256,12 +1287,14 @@
     button.disabled=false;
     updateTranslationNotice(false);
     open('createDialog')}
-    function speak(text,locale=$('#language').value){if(!('speechSynthesis'in window)){toast('Audio playback is not supported in this browser.');
-    return}speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang=locale;
-    u.rate=.88;
-    speechSynthesis.speak(u)}
+    let speechRequest=0;
+    function waitForSpeechVoices(){const current=speechSynthesis.getVoices();if(current.length)return Promise.resolve(current);return new Promise(resolve=>{let settled=false;const done=()=>{if(settled)return;settled=true;clearTimeout(timer);resolve(speechSynthesis.getVoices())};const timer=setTimeout(done,1400);speechSynthesis.addEventListener('voiceschanged',done,{once:true})})}
+    async function speak(text,locale=$('#language').value){if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){toast('Audio playback is not supported in this browser.');
+    return}const request=++speechRequest;speechSynthesis.cancel();
+    const voices=await waitForSpeechVoices();if(request!==speechRequest)return;
+    const languageCode=locale.split('-')[0].toLowerCase(),voice=voices.find(v=>v.lang.toLowerCase()===locale.toLowerCase())||voices.find(v=>v.lang.toLowerCase().startsWith(languageCode+'-'))||voices.find(v=>v.lang.toLowerCase()===languageCode);
+    if(languageCode!=='en'&&!voice){const language=$('#language').selectedOptions[0]?.textContent||locale;toast(`No ${language} speaking voice is available in this browser. The full sentence is shown above.`);return}
+    const u=new SpeechSynthesisUtterance(text);u.lang=locale;u.rate=.88;if(voice)u.voice=voice;u.onerror=()=>toast(`Could not play audio in ${$('#language').selectedOptions[0]?.textContent||locale}.`);speechSynthesis.speak(u)}
     function bindSpeak(){const b=$('#speakTerms');
     if(b)b.onclick=()=>{const s=shifts.find(x=>x.id===activeId)||formShift();
     const locale=$('#language').value;
@@ -1269,6 +1302,7 @@
     else speak(localizedAnnouncement(s),locale)}}
     function openReview(s,mode){activeId=s.id;
     const locale=$('#language').value,copy=workerReviewCopy[locale]||workerReviewCopy['en-IN'];
+    $('#reviewLanguage').value=locale;
     $('#reviewTitle').textContent=copy.title;
     $('#reviewDialog .dialog-head p').textContent=copy.prompt;
     $('#workerConfirm').textContent=copy.agree;
@@ -1469,6 +1503,7 @@
     $('#uiLanguage').onchange=()=>{localStorage.setItem(UI_KEY,uiLang());applyUiLanguage();render();toast('App language updated.')};
     $('#speakerLanguage').onchange=()=>{localStorage.setItem('rozgarreceipt-speaker-language',$('#speakerLanguage').value);toast(`Hirer speech language: ${$('#speakerLanguage').selectedOptions[0].textContent}`)};
     $('#language').onchange=()=>{localStorage.setItem('rozgarreceipt-worker-language',$('#language').value);lastWorkerAgreement='';render();if(lastTranscript)updateTranslationNotice();toast(`Worker listening language: ${$('#language').selectedOptions[0].textContent}`)};
+    $('#reviewLanguage').onchange=()=>{const locale=$('#reviewLanguage').value;$('#language').value=locale;localStorage.setItem('rozgarreceipt-worker-language',locale);lastWorkerAgreement='';render();const s=shifts.find(x=>x.id===activeId);if(s)openReview(s,'review')};
     ['work','workers','date','location','start','end','wage','payment'].forEach(id=>{
       $('#'+id).addEventListener('input',()=>{lastWorkerAgreement=''});
       $('#'+id).addEventListener('change',()=>{lastWorkerAgreement=''});
